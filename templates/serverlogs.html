@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Server Logs{% endblock %}
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/serverlogs.css') }}">
+{% endblock %}
+{% block content %}
+    <p></p>
+    <div class="logrow">
+        <div class="logcolumn">
+            <ul>
+            {% for aPlayer in players %}
+                <li>{{ aPlayer.discordId }} - {{ aPlayer.nick }}{% if aPlayer.admin %} (admin){% endif %}{%if not aPlayer.canDM %} (Cannot DM){% endif %}</li>
+            {% endfor %}
+            </ul>
+        </div>
+        <div class="logcolumn">
+            <ul>
+            {% for quest in quests %}
+                <li>{{ quest.questId }} - {{ quest.title }}</li>
+            {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <hr>
+    <ul>
+    {% for line in logs %}
+        <li>{{ line }}</li>
+    {% endfor %}
+    </ul>
+{% endblock %}

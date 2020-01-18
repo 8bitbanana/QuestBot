@@ -1,0 +1,106 @@
+{% extends "cards.html" %}
+{% block title %}Questboard{% endblock %}
+{% block cards %}
+    {% for quest in quests if quest.dm != None %}
+
+
+    <div class="card mb-4 spellcard {{ colourclass(quest) }}" style="display: inherit">
+        <div class="card-body">
+            <h4>{{ quest.title }}</h4>
+            <hr>
+            <p>{{ quest.description }}</p>
+            <hr>
+            <p>Location: {{ quest.location }} | Contractor: {{ quest.giver }} | Spoils: {{ quest.reward }}</p>
+            <hr>
+            <p>Level: {{ quest.levelReq }} | 
+            {% if quest.stampReward == quest.Stamp.BRONZE %}
+            Stamp: Bronze
+            {% elif quest.stampReward == quest.Stamp.SILVER %}
+            Stamp: Silver
+            {% elif quest.stampReward == quest.Stamp.GOLD %}
+            Stamp: Gold
+            {% elif quest.stampReward == quest.Stamp.PLATINUM %}
+            Stamp: Platinum
+            {% else %}
+            Stamp: {{ quest.stampReward}} Bronze
+            {% endif %}
+            </p>
+            <p>
+                Rewards: {{ quest.getFormattedRewards() }}
+            </p>
+            <hr>
+            <div class="text-center">
+                {% if quest.dm %}
+                    <p><em>DMed by {{ playerDict[quest.dm].nick }}</em></p>
+                {% else %}
+                    <p><em>No DM set</em></p>
+                {% endif %}
+                <p><em>{{ quest.getFormattedDate() }}</em></p>
+            </div>
+            <hr>
+            <div class="text-center">
+                <p style="margin-bottom:0"><strong>Commander</strong> ({{ quest.leadershipReq }}Ls)</p>
+                {% if quest.commander == player.discordId %}
+                    <a onclick="confirm('Are you sure you want to <strong>releave</strong> the responsibility of commander for this quest?<br><em>{{quest.title|jsescape}}</em><br>This will refund the <strong>{{quest.leadershipReq}}</strong> Leadership you spent.', ()=>qba('releaveCommander', '{{ quest.questId }}'))" class="btn btn-light">{{ player.nick }} (Releave Commander)</a>
+                {% elif quest.commander %}
+                    <a class="btn btn-light">{{ playerDict[quest.commander].nick }}</a>
+                {% else %}
+                    {% if player.discordId == quest.dm %}
+                        <a class="btn btn-light disabled">You are DMing</a>
+                    {% elif player.leadership < quest.leadershipReq %}
+                        <a class="btn btn-light disabled">Leadership too low</a>
+                    {% elif player.getLevel() < quest.levelReq %}
+                        <a class="btn btn-light disabled">Level too low</a>
+                    {% else %}
+                        <a onclick="confirm('Are you sure you want <strong>claim</strong> the responsibility of commander for this quest?<br><em>{{quest.title|jsescape}}</em><br>This will cost <strong>{{quest.leadershipReq}}</strong> of your {{player.leadership}} Leadership.{%if player.discordId in quest.players%}<br>This will <strong>replace your current position in the quest\'s players</strong>.{%endif%}', ()=>qba('claimCommander', '{{ quest.questId }}'))" class="btn btn-light">Claim Commander</a>
+                    {% endif %}
+                {% endif %}
+            </div>
+            <hr>
+            <p>{{ quest.players|length }}/{{ quest.playerSlots }} players</p>
+            <ul>
+            {% for questPlayer in quest.players %}
+                <li>{{ playerDict[questPlayer].nick }} {% if quest.players[questPlayer] %} ({{ roles[quest.players[questPlayer]]['name'] }}){% endif %}</li>
+            {% endfor %}
+            {% for _ in range(quest.playerSlots - quest.players|length ) %}
+                <li>Empty Slot</li>
+            {% endfor %}
+            </ul>
+            <div class="text-center">
+                <p>
+                {% if player.discordId in quest.players %}
+                    <a onclick="confirm('Are you sure you want to <strong>leave</strong> this quest?<br><em>{{quest.title|jsescape}}</em>', ()=>qba('leaveQuest', '{{ quest.questId|jsescape }}'))" class="btn btn-light">Leave Quest</a>
+                {% else %}
+                    {% if player.discordId == quest.dm %}
+                        <a class="btn btn-light disabled">You are DMing</a>
+                    {% elif quest.players|length >= quest.playerSlots %}
+                        <a class="btn btn-light disabled">Quest if full</a>
+                    {% elif player.getLevel() < quest.levelReq %}
+                        <a class="btn btn-light disabled">Level too low</a>
+                    {% else %}
+                        <a onclick="confirm('Are you sure you want to <strong>join</strong> this quest?<br><em>{{quest.title|jsescape}}</em>{%if quest.commander == player.discordId%}<br>This will <strong>releave your current commander position</strong>.{%endif%}', ()=>qba('joinQuest', '{{ quest.questId }}'))" class="btn btn-light">Join Quest</a>
+                    {% endif %}
+                {% endif %}
+                </p>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <h2 class="dmheader">No quests found.</h2>
+    {% endfor %}
+{% endblock %}
+    {% block footer %}
+    {% if quests|length > 0 %}
+    <script>
+        function qba(action, questId, discordId=null) {
+            $.post(
+                "/questBoardAction/"+action+"?questId="+questId+"&discordId="+discordId
+            ).fail(function (data) {
+                alert("Server error - " + data.responseText + "\nTry reloading the page");
+            }).done(function (data) {
+                location.reload(true);
+            });
+        }
+    </script>
+    {% endif %}
+{% endblock %}

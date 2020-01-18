@@ -1,0 +1,157 @@
+
+body {
+    background-color: #2C3E50;
+    color: #fff;
+}
+
+p {
+    margin-bottom: 0 !important;
+}
+
+h1 {
+    font-family: MrJeeves;
+    margin-top: 5px;
+    color: white;
+}
+
+.dmheader {
+    font-family: MrJeeves;
+    text-align: center;
+    color: #e6ddbe;
+}
+
+.noquestmessage {
+    color: #e6ddbe;
+    margin-bottom: 1rem !important;
+}
+
+hr:not(.card-body) {
+    border-color: #e6ddbe;
+}
+
+.feather {
+    width: 16px;
+    height: 16px;
+    vertical-align: text-bottom;
+}
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 100; /* Behind the navbar */
+    padding: 48px 0 0; /* Height of navbar */
+    box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+}
+
+.sidebar-sticky {
+    position: relative;
+    top: 0;
+    height: calc(100vh - 48px);
+    padding-top: .5rem;
+    overflow-x: hidden;
+    overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+}
+
+.statdisplay, .sidebar-sticky > .nav > .nav-item {
+    margin-left: 16px;
+    margin-right: 16px;
+    margin-top: 32px;
+    padding: 5px;
+    /*border: 1px solid white;*/
+    border-radius: 5px;
+    text-align: center;
+    background-color: #e6ddbe;
+    background-image: url("/static/img/homebrewery_bg.jpg");
+    color: black;
+    font-family: BookSanity;
+}
+.admin-item > a {
+    padding-top: 1px;
+    padding-bottom: 1px;
+    color: darkred !important;
+}
+.admin-item {
+    margin-left: 30px !important;
+    margin-right: 30px !important;
+    border: 3px darkred solid;
+    
+}
+.nav-item > * {
+    margin: 0;
+}
+
+.modal-content {
+    background-image: url("/static/img/homebrewery_bg.jpg");
+    background-color: #e6ddbe;
+}
+
+@supports ((position: -webkit-sticky) or (position: sticky)) {
+.sidebar-sticky {
+        position: -webkit-sticky;
+        position: sticky;
+    }
+}
+
+.sidebar .nav-link {
+    font-weight: 500;
+    color: #333;
+}
+
+.sidebar .nav-link .feather {
+    margin-right: 4px;
+    color: #999;
+}
+
+.sidebar .nav-link.active {
+    color: #007bff;
+}
+
+.sidebar .nav-link:hover .feather,
+.sidebar .nav-link.active .feather {
+    color: inherit;
+}
+
+.sidebar-heading {
+    font-size: .75rem;
+    text-transform: uppercase;
+}
+
+/*
+* Content
+*/
+
+[role="main"] {
+    padding-top: 48px; /* Space for fixed navbar */
+}
+
+/*
+* Navbar
+*/
+
+.navbar-brand {
+    padding-top: .75rem;
+    padding-bottom: .75rem;
+    font-size: 1rem;
+    background-color: rgba(0, 0, 0, .25);
+    box-shadow: inset -1px 0 0 rgba(124, 122, 122, 0.25);
+}
+
+.navbar .form-control {
+    padding: .75rem 1rem;
+    border-width: 0;
+    border-radius: 0;
+}
+
+.form-control-dark {
+    color: #fff;
+    background-color: rgba(255, 255, 255, .1);
+    border-color: rgba(255, 255, 255, .1);
+}
+
+.form-control-dark:focus {
+    border-color: transparent;
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, .25);
+}
+

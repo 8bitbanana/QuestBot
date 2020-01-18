@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/questboard.css') }}">
+{% endblock %}
+{% block content %}
+<div class="justify-content d-flex flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3"></div>
+    <div id="card-container" class="px-4 mt-3">
+        {% block topheader %}
+        {% endblock %}
+        <div class="row">
+            <div class="card-deck">
+                {% block topcards %}
+                {% endblock %}
+            </div>
+        </div>
+        {% block topfooter %}
+        {% endblock %}
+    </div>
+    {% block inbetween %}
+    {% endblock %}
+    <div id="card-container" class="px-4 mt-3">
+            {% block bottomheader %}
+            {% endblock %}
+            <div class="row">
+                <div class="card-deck">
+                    {% block bottomcards %}
+                    {% endblock %}
+                </div>
+            </div>
+            {% block bottomfooter %}
+            {% endblock %}
+        </div>
+</div>
+{% endblock %}

@@ -1,0 +1,33 @@
+#datetimepicker {
+    padding: 2rem;
+    background-color: white;
+    margin-top: 1rem;
+    border-radius: 1rem;
+    color: black;
+}
+
+.row {
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+.info {
+    color: white;
+    text-align: center;
+    margin: 1rem;
+}
+.info > * {
+    margin: 0;
+}
+.hoverspin:hover {
+    animation-name: spin;
+    animation-duration: 0.5s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+
+@keyframes spin {
+    0% {transform: rotate(0deg);}
+    50% {transform: rotate(180deg);}
+    100% {transform: rotate(360deg);}
+}

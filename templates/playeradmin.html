@@ -1,0 +1,37 @@
+{% extends "cards.html" %}
+{% block title %}Player Admin{% endblock %}
+{% block header %}
+<a href="/stampReference" target="_blank" class="btn btn-light my-2">Stamp Reference</a>
+<style>
+    label {
+        margin-bottom: 0;
+        margin-top:0.5rem;
+    }
+</style>
+{% endblock %}
+{% block cards %}
+    {% for player in players %}
+    <div class="card mb-4 spellcard" style="display: inherit">
+        <div class="card-body">
+            <h4>{{ player.nick }}</h4>
+            <form action="/updatePlayerStats" method="POST">
+            <label class="text-truncate">Influence</label>
+            <input name="influence" class="form-control" type="number" min="0" value="{{ player.influence }}">
+            <label class="text-truncate">Leadership</label>
+            <input name="leadership" class="form-control" type="number" min="0" value="{{ player.leadership }}">
+            <label class="text-truncate">Stamps</label>
+            <input name="stamps" class="form-control" type="number" min="0" value="{{ player.stamps }}">
+            <input name="discordId" type="hidden" value="{{ player.discordId }}">
+            <input style="margin-top:0.5rem" type="submit" class="btn btn-primary mx-auto" value="Update">
+            </form>
+        </div>
+    </div>
+    {% endfor %}
+{% endblock %}
+{% block footer %}
+<script>
+    document.querySelectorAll("form").forEach(function (form) {
+        form.reset();
+    })
+</script>
+{% endblock %}

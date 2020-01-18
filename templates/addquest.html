@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>QuestAdd</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='lib/css/bootstrap.min.css') }}">
+</head>
+
+<body style="margin-top: 12px;">
+    <header>
+        <h1 class="text-center" style="margin-top: 12px;">Add a quest</h1>
+    </header>
+    <form action="{% if DM %}/setquestDMsubmit{% else %}/setquestsubmit{% endif %}" method="POST" style="padding: 5vw;padding-top: 0;padding-bottom: 0;">
+        <div class="form-group"><label>Quest Title</label><input class="form-control" type="text" name="title" required="" placeholder="Kill some gnolls or whatever" value="{{ prefill.title }}"></div>
+        <div class="form-group"><label>Quest Description</label><textarea class="form-control" spellcheck="true" required="" name="description">{{ prefill.description }}</textarea></div>
+        <div class="form-group">
+            <div class="form-row">
+                <div class="col"><label class="text-truncate">Location</label><input class="form-control" type="text" name="location" required="" value="{{ prefill.location }}"></div>
+                <div class="col"><label class="text-truncate">Contractor</label><input class="form-control" type="text" name="giver" required="" value="{{ prefill.giver }}"></div>
+                <div class="col"><label class="text-truncate">Spoils</label><input class="form-control" type="text" name="reward" required="" value="{{ prefill.reward }}"></div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="form-row">
+                <div class="col"><label class="text-truncate">Level Requirement</label><input class="form-control" type="number" name="levelReq" required="" value="{{ prefill.levelReq }}" name="Level" min="0" max="25"></div>
+                <div class="col"><label class="text-truncate">Officer Slots</label><input class="form-control" type="number" name="playerSlots" required="" value="{{ prefill.playerSlots }}" name="Player Slots" min="0"></div>
+                <div class="col"><label class="text-truncate">Commander Lds Cost</label><input class="form-control" type="number" name="leadershipReq" required="" value="{{ prefill.leadershipReq }}" name="Leadership Cost" min="0"></div>
+                <div class="col">
+                    <label class="text-truncate">Stamp Reward</label>
+                    <select class="form-control" name="stampReward">
+                        <option {% if prefill.stampReward == 1 %}selected {% endif %}value="1">Bronze</option>
+                        <option {% if prefill.stampReward == 2 %}selected {% endif %}value="2">Silver</option>
+                        <option {% if prefill.stampReward == 4 %}selected {% endif %}value="4">Gold</option>
+                        <option {% if prefill.stampReward == 8 %}selected {% endif %}value="8">Platinum</option>
+                    </select>
+                </div>
+                <div class="col"><label class="text-truncate">Influence Reward</label><input class="form-control" type="number" name="influenceReward" required="" value="{{ prefill.influenceReward }}" name="Influence Reward" min="0"></div>
+                <div class="col"><label class="text-truncate">Leadership Reward</label><input class="form-control" type="number" name="leadershipReward" required="" value="{{ prefill.leadershipReward }}" name="Leadership Reward" min="0"></div>
+                <div class="col"><label class="text-truncate">Dungeon Master</label>
+                    <select class="form-control" name="dm">
+                        {% if DM %}
+                            <option {% if prefill.dm == player.discordId %}selected {% endif %}value="{{ player.discordId }}">{{ player.nick }}</option>
+                        {% else %}
+                            {% for discordId, otherPlayer in playerDict.items() %}
+                            <option {% if prefill.dm == discordId %}selected {% endif %}value="{{ discordId }}">{{ otherPlayer.nick }}</option>
+                            {% endfor %}
+                        {% endif %}
+                            <option {% if prefill.dm == None %}selected {% endif %}value="None">Leave unclaimed</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <input type="hidden" name="questId" value="{{ prefill.questId }}">
+        <input type="submit" class="btn btn-primary text-center d-flex d-sm-flex d-lg-flex justify-content-center mx-auto justify-content-sm-center justify-content-lg-center" type="button" style="width: 85px;margin-right: auto;margin-left: auto;height: 47px;font-size: 18px;" value="Submit"></form>
+    <script
+        src="assets/js/jquery.min.js"></script>
+        <script src="{{ url_for('static', filename='bootstrap/js/bootstrap.min.js') }}"></script>
+</body>
+
+</html>

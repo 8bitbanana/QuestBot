@@ -1,0 +1,6 @@
+.logrow {
+    display: flex;
+}
+.logcolumn {
+    flex: 50%;
+}

@@ -1,0 +1,71 @@
+#questswitcher {
+    display: flex;
+    flex-direction: row;
+}
+
+#questtitle {
+    flex-grow: 2;
+}
+
+#questtitle, #questselectcontainer {
+    margin: 0.5rem;
+    margin-top: 1rem;
+    border-radius: 5px;
+    text-align: center;
+    background-color: #e6ddbe;
+    background-image: url("/static/img/homebrewery_bg.jpg");
+    color: black;
+    font-family: BookSanity;
+    padding: 0.5rem;
+}
+
+.tinyquestinfo {
+    font-style: italic;
+    font-size: 8pt;
+    color: #000;
+}
+
+.tinypowerinfo {
+    font-style: italic;
+    font-size: 10pt;
+    color: #000;
+    text-align: center;
+    margin-bottom: 1rem !important;
+}
+
+.cardlike {
+    background-color: #e6ddbe;
+    background-image: url("/static/img/homebrewery_bg.jpg");
+    border-radius: 5px;
+    margin: 0.5rem;
+    font-family: BookSanity;
+    padding: 1rem;
+    color: #000;
+}
+
+.vcenter {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+}
+.upabit {
+    top: 40%;
+}
+
+.card-body > p {
+    margin-bottom: 1rem !important;
+}
+
+#questtitle > h3 {
+    color: #58180D;
+}
+
+.infomessage {
+    color: #e6ddbe;
+    padding-top: 3rem;
+    text-align: center;
+}
+
+.card-body > .hcenter {
+    text-align: center;
+}

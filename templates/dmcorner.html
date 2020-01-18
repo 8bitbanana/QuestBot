@@ -1,0 +1,134 @@
+{% extends "cardsdouble.html" %}
+{% block title %}DM Corner{% endblock %}
+{% block topheader %}
+<h1 class="dmheader">Your Quests</h1>
+<hr>
+{% endblock %}
+{% block topcards %}
+    {% for quest in quests if quest.dm == player.discordId %}
+        <div class="card mb-4 spellcard {{ colourclass(quest) }}">
+            <div class="card-body">
+                <h4>{{ quest.title }}</h4>
+                <p><a href="addquestDM?questId={{ quest.questId }}">Edit</a>
+                <a onclick="confirmButReally('Are you sure you want to <strong>irreversibly delete</strong> this quest?<br><em>{{quest.title|jsescape}}</em><br>Participants <strong>will not get any rewards</strong>, such as stamps or influence.',()=>qdel('{{ quest.questId|jsescape }}', false))", href="#">Delete</a>
+                <a onclick="confirmButReally('Are you sure you want to <strong>irreversibly mark this quest as completed</strong>?<br><em>{{quest.title|jsescape}}</em><br>This will <strong>delete</strong> the quest, and <strong>credit the quest\'s rewards</strong> to all quest participants.', ()=>qdel('{{ quest.questId|jsescape }}', true))", href="#">Complete</a></p>
+                <hr>
+                <p>{{ quest.description }}</p>
+                <hr>
+                <div class="text-center">
+                    <p><em>{{ quest.getFormattedDate() }} {% if quest.date %}<a href="#" onclick="unsetQuestDate('{{quest.questId}}')">Unset</a>{% endif %}</em></p>
+                    <a href="/setdate?questId={{ quest.questId }}" class="btn btn-light">Set Date</a>
+                </div>
+                <hr>
+                <p>Level: {{ quest.levelReq }} | 
+                {% if quest.stampReward == quest.Stamp.BRONZE %}
+                Stamp: Bronze
+                {% elif quest.stampReward == quest.Stamp.SILVER %}
+                Stamp: Silver
+                {% elif quest.stampReward == quest.Stamp.GOLD %}
+                Stamp: Gold
+                {% elif quest.stampReward == quest.Stamp.PLATINUM %}
+                Stamp: Platinum
+                {% else %}
+                Stamp: {{ quest.stampReward}} Bronze
+                {% endif %}
+                </p>
+                <hr>
+                <p>{{ quest.players|length }}/{{ quest.playerSlots }} players </p>
+                <ul>
+                {% for discordId in quest.players %}
+                    {% set jsfunction="dca('kickPlayer', '"+quest.questId|string|jsescape + "', '"+discordId|string +"')" %}
+                    <li>{{ playerDict[discordId].nick }} <a href="#" onclick="confirm('Are you sure you want to <strong>kick {{playerDict[discordId].nick}}</strong> from this quest?',()=>{{ jsfunction }})">(Kick)</a></li>
+                {% endfor %}
+                </ul>
+                <hr>
+                <div class="text-center">
+                    <a onclick="confirm('Are you sure you want to <strong>releave your position as DM</strong>?<br><em>{{quest.title|jsescape}}</em><br>This will <strong>remove any current players</strong>.',()=>dca('releaveDM', '{{ quest.questId|jsescape }}'))" class="btn btn-light">Releave DM</a>
+                </div>
+            </div>
+        </div>
+    {% else %}
+    <p class="noquestmessage">You are not DMing any quests</p>
+    {% endfor %}
+{% endblock %}
+{% block bottomheader %}
+<h1 class="dmheader">Unclaimed Quests</h1>
+<hr>
+{% endblock %}
+{% block bottomcards %}
+    {% for quest in quests if quest.dm == None %}
+    <div class="card mb-4 spellcard {{ colourclass(quest) }}">
+        <div class="card-body">
+            <h4>{{ quest.title }}</h4>
+            <hr>
+            <p>{{ quest.description }}</p>
+            <hr>
+            <p>Level: {{ quest.levelReq }} | 
+            {% if quest.stampReward == quest.Stamp.BRONZE %}
+            Stamp: Bronze
+            {% elif quest.stampReward == quest.Stamp.SILVER %}
+            Stamp: Silver
+            {% elif quest.stampReward == quest.Stamp.GOLD %}
+            Stamp: Gold
+            {% elif quest.stampReward == quest.Stamp.PLATINUM %}
+            Stamp: Platinum
+            {% else %}
+            Stamp: {{ quest.stampReward}} Bronze
+            {% endif %}
+            <hr>
+            <div class="text-center">
+                <a onclick="confirm('Are you sure you want to <strong>become the DM</strong> of this quest?<br><em>{{quest.title|jsescape}}</em><br>',()=>dmcq('{{ quest.questId|jsescape }}'))" class="btn btn-light">Become DM</a>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <p class="noquestmessage">There are no unclaimed quests.</p>
+    {% endfor %}
+{% endblock %}
+{% block bottomfooter %}
+<div class="row">
+    <a href="/addquestDM" class="btn btn-light">Create a quest</a>
+</div>
+<script>
+    function qdel(questId, credit=false) {
+        $.post(
+            "/delquest?questId=" + questId + (credit ? "&credit=1" : "")
+        ).fail(function (data) {
+            alert("Server error - " + data.responseText);
+        }).done(function (data) {
+            location.reload(true);
+        });
+    }
+    function dca(action, questId, discordId) {
+        var url = "/dmCornerAction/"+action+"?questId="+questId;
+        if (discordId != null) {
+            url += "&discordId="+discordId;
+        }
+        $.post(
+            url
+        ).fail(function (data) {
+            alert("Server error - " + data.responseText);
+        }).done(function (data) {
+            location.reload(true);
+        });
+    };
+    function dmcq(questId) {
+        $.post(
+            "/dmClaimQuest?questId=" + questId
+        ).fail(function (data) {
+            alert("Server error - " + data.responseText);
+        }).done(function (data) {
+            location.reload(true);
+        });
+    }
+    function unsetQuestDate(questId) {
+        $.post(
+            "/unsetdate?questId=" + questId
+        ).fail(function (data) {
+            alert("Server error - " + data.responseText + "\nTry reloading the page");
+        }).done(function (data) {
+            location.reload(true);
+        });
+    }
+</script>
+{% endblock %}

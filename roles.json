@@ -1,0 +1,147 @@
+{
+    "lieutenant":{
+        "name": "Lieutenant",
+        "desc": "Whilst the commander leads the quest in terms of decision making, the lieutenant leads the quest in terms of battle. Forming strategy and mastering the battlefield is their goal.",
+        "passives": [
+            {
+                "name": "Field Control",
+                "desc": "When you roll initiative, choose any two allies that can see or hear you. Swap their initiatives."
+            }
+        ],
+        "actives": {},
+        "requirements": [],
+        "cost": 0
+    },
+    "antiquarian":{
+        "name": "Antiquarian",
+        "desc":"Able to keep track of gathered loot on a quest, the antiquarian is a treasurer of sorts, maintaining the quest-goer’s spoils, and appraising anything they look at.",
+        "passives": [
+            {
+                "name": "Appraisal",
+                "desc": "By spending 1 minute, you can assess the exact worth of any object that fits in a 10-foot cube.<br>You may also, at will, replicate the effects of the <em>identify</em> spell as if it were cast as a ritual"
+            }
+        ],
+        "actives": {
+            "shutdown": {
+                "name": "Shutdown",
+                "desc": "As an action on your turn, you replicate the effects of the <em>dispel magic</em> spell as if it were cast at a level equal to 3 + your proficiency bonus.",
+                "cost":15,
+                "uses":1
+            }
+        },
+        "requirements": [
+            "Proficiency in the Investigation skill, the Guild Artisan Background, or an Intelligence score of 15 or higher."
+        ],
+        "cost": 0
+    },
+    "arcanist":{
+        "name": "Arcanist",
+        "desc": "A staff arcanist acts as the quest-goers’ primary source of magic, either as a defensive, offensive, or utilitarian tool. Arcanists specialise in channelling their spellcasting into beneficial effects and maintaining control over the party.",
+        "passives": [
+            {
+                "name": "Sense Magic",
+                "desc": "You can detect any number of magical presences in a 30-foot radius around you. You do not know its source, but a successful DC 15 Intelligence (Arcana) check reveals its school."
+            }
+        ],
+        "actives": {
+            "channeltheweave": {
+                "name":"Channel the Weave",
+                "desc":"As a bonus action on your turn, you channel latent magical energies from around you into a new source of strength. You regain one 1st-level spell slot.<br>As you gain character levels, the level of spell with which you can replenish increases by 1 at 5th, 7th, 9th and 11th. When you use this Role Power at these levels, you may regain a spell slot of a level lower than the spell slot level listed.",
+                "cost":15,
+                "uses":1
+            }
+        },
+        "requirements": [
+            "3rd level or higher in a spellcasting class"
+        ],
+        "cost": 0
+    },
+    "manatarms": {
+        "name": "Man-at-Arms",
+        "desc": "The man-at-arms marks themselves for their expertise in weaponry, either through maintenance or ability of usage.",
+        "passives": [
+            {
+                "name": "Precise Strikes",
+                "desc": "When you roll damage for a weapon attack, treat all rolls of 1 on a damage die as a 2."
+            }
+        ],
+        "actives": {
+            "striketrue": {
+                "name": "Strike True",
+                "desc": "When you make a weapon attack, instead of rolling you can choose to use this Role Power. Treating the result as a critical hit.<br>This power does not affect the die result, preventing interaction with items that require a roll of a 20, such as a <em>vorpal sword</em>.",
+                "cost":5,
+                "uses":1
+            }
+        },
+        "requirements": [
+            "Proficiency in marital weapons or smith’s tools"
+        ],
+        "cost": 0
+    },
+    "medic": {
+        "name": "Medic",
+        "desc": "Medics act as protectors and rejuvenators of a party of quest-goers, able to get their allies back on their feet when in danger.",
+        "passives": [
+            {
+                "name": "Rest and Mend",
+                "desc": "During a short rest, the medic can tend to up to two creatures, aiding them in restoring their hit points. Whenever one of the chosen creatures rolls hit dice to recover lost hit points during this rest, that creature rolls each expended hit dice twice, taking the higher result."
+            }
+        ],
+        "actives": {
+            "treatmentundertrial": {
+                "name": "Treatment Under Trial",
+                "desc": "As a bonus action on your turn, you perform emergency treatment on an unconscious creature you can touch. The target can expend a number of hit dice equal to its proficiency bonus + 1, regaining hit points as if it spent them during a short rest.<br>Creatures that recover hit points in this way gain the benefits of your Rest and Mend Role Effect.",
+                "cost": 10,
+                "uses": 1
+            }
+        },
+        "requirements": [
+            "Proficiency in the Medicine skill or the ability to cast one or more spells that restore a creature’s hit points"
+        ],
+        "cost": 0
+    },
+    "scout": {
+        "name": "Scout",
+        "desc": "The scout acts as a lookout and alert to danger for the quest-goers, keeping watch for traps, hidden foes or important sights. The scout is quick on their feet and able to out manoeuvre most foes.",
+        "passives": [
+            {
+                "name": "Nimble Step",
+                "desc": "You gain an additional 5 feet of movement and can take the Dash action as a bonus action.<br>If you can already take the Dash action as a bonus action, you gain an additional 10 feet of movement instead of 5 feet."
+            }
+        ],
+        "actives": {
+            "flankingmanoeuvre": {
+                "name": "Flanking Manoeuvre",
+                "desc": "You and any allies within 30 feet of you may move up to half your speed without provoking attacks of opportunity.",
+                "cost": 5,
+                "uses": 1
+            }
+        },
+        "requirements": [
+            "Proficiency in two of the following skills: Investigation, Perception, or Survival"
+        ],
+        "cost": 0
+    },
+    "standardbearer": {
+        "name": "Standard-Bearer",
+        "desc": "Keeping morale high, the standard-bearer holds sway over a Starblade Standard, a magical item that invokes power in those allied to it. The standard-bearer is linked to the item upon the quest’s commencing, and can activate it at any time.",
+        "passives": [
+            {
+                "name": "Morale Boost",
+                "desc": "When an allied creature within 30 feet of you rolls a saving throw, if they can see you, they may use their reaction to feel inspired by the standard, allowing them to add 1d4 to their saving throw result.<br>A creature may use this feature before or after they makes their roll, but before the outcome has been determined."
+            }
+        ],
+        "actives": {
+            "planttheflag": {
+                "name": "Plant the Flag",
+                "desc": "As a bonus action on your turn, you plant the Starblade Standard into the ground at your feet, releasing a wave of energy in a 30-foot radius around it that lasts for 10 minutes.<br>Whilst an allied creature stands in the area, they gain the following benefits:<br><ul><li>Each creature gains advantage on saving throws against the charmed or frightened condition.</li><li>Each creature gains temporary hit points equal to 2 + its proficiency bonus at the start of each of its turns.</li></ul>Once the effect ends, the Standard becomes an inert banner.",
+                "cost": 10,
+                "uses": 1
+            }
+        },
+        "requirements": [
+            "A Charisma score of 13 or higher"
+        ],
+        "cost": 0
+    }
+}

@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Set a date{% endblock %}
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='lib/css/tempusdominus-bootstrap-4.min.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='lib/css/fontawesome.min.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/datepicker.css') }}">
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='lib/js/moment.min.js') }}"></script>
+<script src="{{ url_for('static', filename='lib/js/tempusdominus-bootstrap-4.min.js') }}"></script>
+{% endblock %}
+{% block content %}
+<div style="overflow:hidden">
+    <h2 class="dmheader">Set a date</h2>
+    <hr>
+    <div class="info">
+        <p>Welcome to the best date picker that the world has ever seen</p>
+        <p></p>
+    </div>
+    <form action="/setDateSubmit", method="POST">
+        <div class="row">
+            <div class="col-md-8">
+                <div id="datetimepicker"></div>
+            </div>
+        </div>
+        <div class="row">
+            <input type="hidden" name="questId" value="{{ quest.questId }}">
+            <input type="hidden" name="date" id="hiddenDate" value="">
+            <input class="btn btn-light hoverspin" id="submitbtn" type="submit" value="Submit">
+        </div>
+    </div>
+    <script type="text/javascript">
+        var d;
+        $(function () {
+            var date = new Date();
+            date.setMinutes(0);
+            date.setHours(date.getHours() + 1);
+            $('#datetimepicker').datetimepicker({
+                inline: true,
+                sideBySide: true,
+                minDate: new Date(),
+                date: date,
+                stepping: 30,
+                {% if quest.date %}date: moment({{ quest.date }} * 1000),{% endif %}
+            });
+            $("#datetimepicker").on("change.datetimepicker", function (e) {
+                $("#hiddenDate")[0].value = e.date.format("X"); // unix timestamp
+                $("#submitbtn")[0].style = "";
+            });
+            $("#submitbtn")[0].style = "display:none"
+        });
+    </script>
+</div>
+{% endblock %}

@@ -1,0 +1,209 @@
+{% extends "base.html" %}
+
+{% macro roleModal(role) %}
+<h4>{{ role['name'] }}</h4>
+<p>{{ role['desc']|safe }}</p>
+{% if role['requirements']|length > 0 %}
+    <hr>
+    <em>Prerequisites</em>
+    <ul>
+    {% for requirement in role['requirements'] %}
+        <li>{{ requirement|safe }}</li>
+    {% endfor %}
+    </ul>
+{% endif %}
+{% if role['cost'] != 0 %}
+<p><strong>Costs {{ role['cost'] }} leadership to claim.</strong></p>
+{% endif %}
+{% if role['passives']|length > 0 %}
+    <hr>
+    <h5>Role Effects</h5>
+    {% for passive in role['passives'] %}
+        <ul><li>{{ passive['name'] }}</li></ul>
+        <p>{{ passive['desc']|safe }}</p>
+    {% endfor %}
+{% endif %}
+{% if role['actives']|length > 0 %}
+    <hr>
+    <h5>Role Powers</h5>
+    {% for active in role['actives'].values() %}
+        <ul><li>{{ active['name'] }}</li></ul>
+        <p><em>Cost: {{ active['cost'] }} leadership</em></p>
+        <p>{{ active['desc']|safe }}</p>
+    {% endfor %}
+{% endif %}
+{% endmacro %}
+
+{% block title %}Control Center{% endblock %}
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/questboard.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/controlcenter.css') }}">
+{% endblock %}
+{% block content %}
+{% if currentQuest != None %}
+<div id="questswitcher">
+    <div id="questtitle">
+        <h3 class="upabit vcenter">{{ currentQuest.title }}</h3>
+        <p class="tinyquestinfo">DMed by {{ playerDict[currentQuest.dm].nick }} - {% if currentQuest.date %}{{ currentQuest.getFormattedDate() }}{% else %}No date set{% endif %}</p>
+    </div>
+    <div id="questselectcontainer">
+        {{ questSelect(quests, currentQuest, "questSelect vcenter", onChange="viewquest(this.value)") }}
+    </div>
+</div>
+<div>
+    {% if currentQuest.players[player.discordId] == None %}
+
+    <p class="infomessage">
+        You do not have a role in this quest yet.
+        Claim a role here!
+    </p>
+
+    <div>
+        <div id="card-container" class="px-4 mt-3">
+            <div class="row">
+                <div class="card-columns">
+                    {% for roleId, role in roles.items() %}
+                    <div class="card mb-4 spellcard">
+                        <div class="card-body">
+                            <h4>{{ role['name'] }}</h4>
+                            <p>{{ role['desc']|safe }}</p>
+                            {% if role['cost'] != 0 %}
+                            <p><strong>Costs {{ role['cost'] }} leadership to claim.</strong></p>
+                            {% endif %}
+                            {% if role['requirements']|length > 0 %}
+                            <hr>
+                            <em>Prerequisites</em>
+                            <ul>
+                            {% for requirement in role['requirements'] %}
+                                <li>{{ requirement|safe }}</li>
+                            {% endfor %}
+                            </ul>
+                            {% else %}
+                            <em>No prerequisites</em>
+                            {% endif %}
+                            <div class="hcenter">
+                                <a onclick="roleModal('{{ roleId }}', ()=>cca('claimRole', '{{ currentQuest.questId|jsescape }}', roleId='{{ roleId }}'))" class="btn btn-light">View Info</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div style="display:none">
+        {% for roleId, role in roles.items() %}
+        <div id="{{roleId}}-desc">
+            {{ roleModal(role) }}
+        </div>
+        {% endfor %}
+    </div>
+
+    {% else %}
+    {% set role=roles[currentQuest.players[player.discordId]] %}
+    <div style="text-align:center" class="cardlike">
+        <h2>{{ player.nick }} - {{ role['name'] }}</h2>
+        <p>
+            {{ role['desc'] }}
+        </p>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col cardlike">
+                <h4>Role Effects</h4>
+                <p class="tinypowerinfo">
+                    Role effects are passive effects that cost no leadership.
+                </p>
+                {% if role['passives']|length > 0 %}
+                {% for power in role['passives'] %}
+                    <h5>{{ power['name'] }}</h5>
+                    <p>{{ power['desc']|safe }}</p>
+                {% endfor %}
+                {% else %}
+                <p>
+                    The {{ role['name'] }} has no role effects.
+                </p>
+                {% endif %}
+            </div>
+            <div class="col cardlike">
+                <h4>Role Powers</h4>
+                <p class="tinypowerinfo">
+                    Role powers are powerful once-per-quest abilities that cost leadership to activate.
+                </p>
+                {% if role['actives']|length > 0 %}
+                {% for powerId, power in role['actives'].items() %}
+                    <h5>{{ power['name'] }}</h5>
+                    <p>{{ power['desc']|safe }}</p>
+                    {% if power['cost'] != 0 %}
+                    <p><strong>Costs {{ power['cost'] }} leadership to use.</strong></p>
+                    {% endif %}
+                    <div class="text-center">
+                    {% if player.discordId in currentQuest.usedpowers.keys() and currentQuest.usedpowers[player.discordId] <= power['uses'] %}
+                        {% if power['uses'] == 1 %}
+                            <a class="btn btn-light disabled">Already used</a>
+                        {% else %}
+                            <a class="btn btn-light disabled">All uses expended</a>
+                        {% endif %}
+                    {% elif player.leadership < power['cost'] %}
+                        <a class="btn btn-light disabled">Leadership too low</a>
+                    {% else %} 
+                        {% set message="Are you sure you want to activate <strong>" + power['name'] + "?</strong><br>This will cost <strong>" + power['cost']|string + "</strong> of your current <strong>" + player.leadership|string + "</strong> leadership, and you will not be able to use this power again." %}
+                        <a onclick="confirm('{{message}}', ()=>cca('useActive', '{{ currentQuest.questId|jsescape }}', roleId=null, activeId='{{powerId}}'))" class="btn btn-light">Use Power</a>
+                    {% endif %}
+                    </div>
+                {% endfor %}
+                {% else %}
+                <p>
+                    The {{ role['name'] }} has no role powers.
+                </p>
+                {% endif %}
+            </div>
+        </div>
+        <div class="text-center">
+            {% set message='Are you sure you want to releave your role?' %}
+            {% if role['cost'] != 0 %}
+                {% set message=message+'<br>You will be refunded the '+role['cost']+' you spent.' %}
+            {% endif %}
+            <a onclick="confirm('{{ message }}', ()=>cca('releaveRole', '{{ currentQuest.questId|jsescape }}'))" class="btn btn-light">Releave Role</a>
+        </div>
+    </div>
+
+    {% endif %}
+</div>
+{% else %}
+<h2 style="text-align:start" class="dmheader">You are not part of any quests.</h2>
+{% endif %}
+<script>
+    function viewquest(questId) {
+        window.location.replace("/controlcenter?questId=" + questId);
+    }
+    function roleModal(roleId, callback) {
+        bootbox.confirm({
+            message: $("#"+roleId+"-desc").clone(),
+            backdrop: true,
+            callback: (result) => {if(result){callback();}}
+        })
+    }
+    function cca(action, questId, roleId=null, activeId=null) {
+        url = "/controlCenterAction/"+action+"?questId="+questId
+        if (roleId != null) {
+            url += "&roleId="+roleId;
+        }
+        if (activeId != null) {
+            url += "&activeId="+activeId;
+        }
+        $.post(
+            url
+        ).fail(function (data) {
+            alert("Server error - " + data.responseText + "\nTry reloading the page");
+        }).done(function (data) {
+            location.reload(true);
+        });
+    }
+    document.querySelectorAll("form").forEach(function (form) {
+        form.reset();
+    })
+</script>
+{% endblock %}

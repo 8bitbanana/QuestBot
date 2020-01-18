@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+
+{% macro playerSelect(playerDict, current, cssclass, unselectedText="None", onChange=None) -%}
+    <select {% if onChange %}onChange="{{ onChange }}"{% endif %} class="custom-select {{ cssclass }}" style="width:auto">
+        <option {% if current == None %}selected {% endif %}value="unselected">{{ unselectedText }}</option>
+        {% for discordId, player in playerDict.items() %}
+            <option {% if discordId == current %}selected {% endif %}value="{{ discordId }}">{{ player.nick }}</option>
+        {% endfor %}
+    </select>
+{%- endmacro %}
+{% macro roleSelect(roles, current, cssclass, unselectedText="None", onChange=None) %}
+    <select {% if onChange %}onChange="{{ onChange }}"{% endif %} class="custom-select {{ cssclass }}" style="width:auto">
+        <option {% if current == None %}selected {% endif %}value="unselected">{{ unselectedText }}</option>
+        {% for roleId, role in roles.items() %}
+            <option {% if roleId == current %}selected {% endif %}value="{{ roleId }}">{{ role['name'] }}</option>
+        {% endfor %}
+    </select>
+{%- endmacro %}
+{% macro questSelect(quests, current, cssclass, onChange=None) %}
+    <select {% if onChange %}onChange="{{ onChange }}"{% endif %} class="custom-select {{ cssclass }}" style="width:auto">
+        {% for quest in quests %}
+            <option {% if quest.questId == current.questId %}selected {% endif %}value="{{ quest.questId }}">{{ quest.title }}</option>
+        {% endfor %}
+    </select>
+{%- endmacro %}
+
+{%- macro titlemacro() -%}
+{% block title %}{% endblock %}
+{%- endmacro -%}
+
+{% macro colourclass(quest) %}
+    {% if quest.stampReward == quest.Stamp.BRONZE %}
+    bronze
+    {% elif quest.stampReward == quest.Stamp.SILVER %}
+    silver
+    {% elif quest.stampReward == quest.Stamp.GOLD %}
+    gold
+    {% elif quest.stampReward == quest.Stamp.PLATINUM %}
+    platinum
+    {% else %}
+    bronze
+    {% endif %}
+{% endmacro %}
+
+<html>
+    <head>
+        <title>{{ titlemacro() }}</title>
+
+        <link rel="stylesheet" href="{{ url_for('static', filename='lib/css/bootstrap.min.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/fonts.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+        {% block css %}
+        {% endblock %}
+        <script src="{{ url_for('static', filename='lib/js/jquery-3.4.1.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='lib/js/bootstrap.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='lib/js/bootbox.min.js') }}"></script>
+        <script>
+            function confirm(message, callback) {
+                bootbox.confirm({
+                    message: message,
+                    backdrop: true,
+                    callback: (result) => {if(result){callback();}}
+                })
+            }
+            function confirmButReally(message, callback) {
+                bootbox.confirm({
+                    message: message,
+                    backdrop: true,
+                    callback: (result) => {if (result){
+                        bootbox.confirm({
+                            message: "Yeah, but are you, like, <em>really</em> sure?",
+                            backdrop: true,
+                            callback: (result) => {if(result){callback();}},
+                            buttons: {
+                                confirm: {label:"Definitely."},
+                                cancel:  {label:"Wait, no"}
+                            }
+                        })
+                    }}
+                })
+            }
+        </script>
+        {% block scripts %}
+        {% endblock %}
+    </head>
+    <body>
+        <nav class="navbar navbar-dark fixed-top bg-dark text-light flex-md-nowrap p-0 shadow">
+            <a class="text-light col-sm-3 col-md-2 mr-0" href="#">Greetings, {{ player.nick }}</a>
+            <h1>{{ titlemacro() }}</h1>
+            <ul class="navbar-nav px-3">
+                <li class="nav-item text-nowrap">
+                <a class="nav-link" href="/logout">Sign out</a>
+                </li>
+            </ul>
+        </nav>
+        
+        <div class="container-fluid">
+            <div class="row">
+                <nav class="col-md-2 d-none d-md-block bg-light text-light bg-dark sidebar">
+                    <div class="sidebar-sticky">
+                        <ul class="nav flex-column">
+                            <li class="nav-item">
+                                <a class="nav-link active" href="/">
+                                    Quest Board
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" href="/controlcenter">
+                                    Control Center
+                                </a>
+                            </li>
+                            {% if player.canDM %}
+                            <li class="nav-item">
+                                <a class="nav-link active" href="/dmcorner">
+                                    DM Corner
+                                </a>
+                            </li>
+                            {% endif %}
+                            {% if player.admin %}
+                            <li class="nav-item admin-item">
+                                <a class="nav-link active" href="/questadmin">
+                                    Quest Admin
+                                </a>
+                            </li>
+                            <li class="nav-item admin-item">
+                                <a class="nav-link active" href="/playeradmin">
+                                    Player Admin
+                                </a>
+                            </li>
+                            <li class="nav-item admin-item">
+                                <a class="nav-link active" href="/actionlogs">
+                                    Server Logs
+                                </a>
+                            </li>
+                            {% endif %}
+                            <li class="nav-item">
+                                <p>Level: {{ player.getLevel() }}</p>
+                                <p>Influence: {{ player.influence }}</p>
+                                <p>Leadership: {{ player.leadership }}</p>
+                                <p><a href="#" onclick="statUpdateModal()">Update</a></p>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+        
+                <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+                    <div style="height:1rem"></div>
+                    {% block content %}
+                    {% endblock %}
+                </main>
+            </div>
+        </div>
+        <div id="playerstatsdialog_container" style="display:none">
+            <div id="playerstatsdialog">
+                <p>
+                    Directly update your stats here.
+                    Use responsibly!
+                </p>
+                <form action="/updateSelfStats" method="POST">
+                    <div class="form-group row">
+                        <label for="influence" class="col-sm-2 col-form-label">Influence</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" type="number" name="influence" value="{{ player.influence }}" min="0">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="leadership" class="col-sm-2 col-form-label">Leadership</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" type="number" name="leadership" value="{{ player.leadership }}" min="0">
+                        </div>
+                    </div>
+                    <input type="submit" class="btn btn-primary text-center">
+                </form>
+            </div>
+        </div>
+        <script>
+            statUpdateModal = () => bootbox.dialog({
+                message: $("#playerstatsdialog").clone(),
+                backdrop: true,
+                onEscape: true
+            })
+        </script>
+    </body>
+</html>

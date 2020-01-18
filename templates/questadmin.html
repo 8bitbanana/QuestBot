@@ -1,0 +1,103 @@
+{% extends "cards.html" %}
+{% block title %}Quest Admin{% endblock %}
+{% block header %}
+<div class="adminwarning">
+    <h3>Warning</h3>
+    <p>This page deliberately has no sanity checking. You can add whoever and whichever to whatever, with no restrictions.</p>
+    <p>You probably shouldn't use this page unless you have to.</p>
+    <p>Also the bot doesn't announce quests that are created/dmed from here.</p>
+</div>
+{% endblock %}
+{% block cards %}
+    {% for quest in quests %}
+        <div class="card mb-4 spellcard">
+            <div class="card-body">
+                <h4>{{ quest.title }}</h4>
+                <p><a href="addquest?questId={{ quest.questId }}">Edit</a> <a onclick="deleteQuest('{{ quest.questId|jsescape }}', false)" href="#">Delete</a> <a onclick="deleteQuest('{{ quest.questId|jsescape }}', true)" href="#">Complete</a></p>
+                <hr>
+                {% if quest.date %}
+                <p title="{{ quest.getFormattedUTCDate() }} (UTC)">{{ quest.getFormattedDate() }} <a href="setdate?questId={{ quest.questId }}">Set</a> <a href="#" onclick="unsetQuestDate('{{ quest.questId|jsescape }}')">Unset</a></p>
+                {% else %}
+                <p>No date set <a href="setdate?questId={{ quest.questId }}">Set</a></p>
+                {% endif %}
+                <hr>
+                <p style="margin-bottom: 0">Commander</p>
+                {% set jsfunction="qaa('changeCommander', '"+quest.questId|string|jsescape + "', this.value)" %}
+                {{ playerSelect(playerDict, quest.commander, "commander", onChange=jsfunction)}}
+                <hr>
+                <p style="margin-bottom: 0">DM</p>
+                {% set jsfunction="qaa('changeDM', '"+quest.questId|string|jsescape + "', this.value)" %}
+                {{ playerSelect(playerDict, quest.dm, "dm", onChange=jsfunction)}}
+                <hr>
+                <p style="margin-bottom:0">{{ quest.players|length }}/{{ quest.playerSlots }} players </p>
+                <ul>
+                {% for discordId in quest.players.keys() %}
+                    {% set jsfunction1="qaa('removePlayer', '"+quest.questId|string|jsescape + "', '"+discordId|string +"')" %}
+                    {% set jsfunction2="qaa('refreshPlayerRole', '"+quest.questId|string|jsescape + "', '"+discordId|string +"')" %}
+                    <li>{{ playerDict[discordId].nick }} <a href="#" onclick="{{ jsfunction1 }}">(Remove)</a> {% if player.discordId in quest.usedpowers.keys() %}<a onclick="{{ jsfunction2 }}" href="#">(Refresh power)</a>{% endif %}
+                    {% set jsfunction="qaa('changeRole', '"+quest.questId|string + "', '"+discordId|string+"', this.value)" %}
+                    {{ roleSelect(roles, quest.players[discordId], "roleSelect", unselectedText="No Role", onChange=jsfunction) }}</li>
+                {% endfor %}
+                </ul>
+                <hr>
+                {{ playerSelect(playerDict, None, "addPlayerSelect", "Select...") }}
+                <a onclick="qaa('addPlayer', '{{ quest.questId|jsescape }}', $(this).prev('.addPlayerSelect')[0].value)" style="margin-top:5px" class="btn btn-light">Add player</a>
+                <p>
+            </div>
+        </div>
+    {% endfor %}
+    <script>
+        function qaa(action, questId, discordId=null, roleId=null) {
+            if (discordId == "unselected") {
+                if (action=="addPlayer") {
+                    return;
+                } else {
+                    discordId = null;
+                }
+            }
+            var url = "/questAdminAction/"+action+"?questId="+questId;
+            if (discordId != null) {
+                url += "&discordId="+discordId;
+            }
+            if (roleId != null) {
+                url += "&roleId="+roleId;
+            }
+            $.post(
+                url
+            ).fail(function (data) {
+                alert("Server error - " + data.responseText + "\nIf this page is throwing an error I screwed up somewhere");
+                console.log(data.responseText);
+            }).done(function (data) {
+                console.log(data.responseText);
+                location.reload(true);
+            });
+        };
+        function unsetQuestDate(questId) {
+            $.post(
+                "/unsetdate?questId=" + questId
+            ).fail(function (data) {
+                alert("Server error - " + data.responseText + "\nIf this page is throwing an error I screwed up somewhere");
+            }).done(function (data) {
+                location.reload(true);
+            });
+        };
+        function deleteQuest(questId, complete=false) {
+            url = "/delquest?questId=" + questId
+            if (complete) {
+                url += "&credit=1";
+            }
+            $.post(
+                url
+            ).fail(function (data) {
+                alert("Server error - " + data.responseText + "\nIf this page is throwing an error I screwed up somewhere");
+            }).done(function (data) {
+                location.reload(true);
+            });
+        };
+    </script>
+{% endblock %}
+{% block footer %}
+<div class="row">
+    <a href="/addquest" class="btn btn-light">Add a new quest</a>
+</div>
+{% endblock %}
