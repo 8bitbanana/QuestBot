@@ -20,3 +20,9 @@
 | **bot.py** | The discord bot! |
 | **database.py** | Base classes like "Player" and "Quest", and interaction with the Redis database |
 | **roles.json** | Where the quest roles, effects and powers are stored |
+
+You can get free cloud hosting if you are a student!
+
+https://education.github.com/pack
+
+Go make stuff
