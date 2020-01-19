@@ -10,7 +10,7 @@
 | **static/** | Files that get sent directly to your browser, like images or Javascript |
 | static/css/ | All CSS files (page style info) |
 | static/img/ | All images (not many)
-| static/js/ | All Javascript files (code to run in your browser) |
+| static/js/ | Currently unused (all JS is inline atm, which is bad) |
 | static/lib/ | All libraries (jQuery and Bootstrap mainly)
 | **templates/** | All HTML template files used to build the pages |
 | templates/base.html | The base HTML file that everything inherits from |
