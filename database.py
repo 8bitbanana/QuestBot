@@ -36,9 +36,10 @@ class DBObject:
                 "discordId", "influence", "leadership",
                 "stamps", "levelReq", "leadershipReq",
                 "stampReward", "playerSlots", "dm",
-                "date", "influenceReward", "leadershipReward"
+                "date", "influenceReward", "leadershipReward",
+                "pointsToSpend", "pointReward"
             ]
-            bool_keys = ["admin"]
+            bool_keys = ["admin", "canDM"]
             dict_int_keys = ["players", "usedpowers"]
             if key in int_keys:
                 try:
@@ -63,6 +64,7 @@ class Player(DBObject):
         self.influence = 300
         self.leadership = 25
         self.stamps = 8
+        self.pointsToSpend = 0
         if discordId:
             self.discordId = discordId
             self.nick = nick
@@ -77,6 +79,15 @@ class Player(DBObject):
         if self.discordId == Config.JackId:
             self.nick = "Pale"
 
+    def spendPoints(self, inf, lds):
+        if (inf+lds) > self.pointsToSpend:
+            return False, "Not enough points to spend"
+        self.influence += inf
+        self.leadership += lds
+        self.pointsToSpend -= (inf+lds)
+        return True, "Success"
+
+
     def getLevel(self):
         return Config.StampsToLevel(self.stamps)
 
@@ -85,7 +96,7 @@ class Player(DBObject):
 
 class Quest(DBObject):
     class Stamp:
-        BRONZE = 1
+        COPPER = 1
         SILVER = 2
         GOLD = 4
         PLATINUM = 8
@@ -103,6 +114,7 @@ class Quest(DBObject):
         self.leadershipReq = 20
         self.description = ""
         self.reward = ""
+        self.pointReward = 0
         self.influenceReward = 100
         self.leadershipReward = 15
         self.stampReward = self.Stamp.SILVER
@@ -112,6 +124,7 @@ class Quest(DBObject):
         self.dm = None
         self.date = None # stored as unix time int
         self.usedpowers = {}
+        self.announce = True
         if jsonData:
             self.deserialise(jsonData)
 
@@ -139,16 +152,9 @@ class Quest(DBObject):
         return date.strftime(Config.DateFormat)
 
     def getFormattedRewards(self):
-        if self.leadershipReward == 0 and self.influenceReward == 0:
+        if self.pointReward == 0:
             return "None"
-        rewardStr = ""
-        if self.influenceReward > 0:
-            rewardStr += f"{self.influenceReward} Inf"
-        if self.leadershipReward > 0:
-            if rewardStr != "":
-                rewardStr += ", "
-            rewardStr += f"{self.leadershipReward} Lds"
-        return rewardStr
+        return str(self.pointReward) + " Company Points"
 
     def setCommander(self, player, forceAdd = False):
         if player == None:
@@ -159,7 +165,7 @@ class Quest(DBObject):
             return False, "You cannot play in a quest you are DMing"
         if self.commander != None and not forceAdd:
             return False, "This quest already has a commander"
-        if Config.StampsToLevel(player.stamps) < self.levelReq and not forceAdd:
+        if not self.areTheyUpToIt(player) and not forceAdd:
             return False, "Your level does not meet the quest requirements"
         if player.leadership < self.leadershipReq and not forceAdd:
             return False, "You do not have enough leadership"
@@ -168,6 +174,13 @@ class Quest(DBObject):
             self.removePlayer(player.discordId)
         self.commander = player.discordId
         return True, successReturn
+
+    def areTheyUpToIt(self, player):
+        playerStamp = Config.StampsToRank(player.stamps)
+        if playerStamp == self.stampReward: return True
+        if playerStamp / 2 == self.stampReward: return True
+        if playerStamp * 2 == self.stampReward: return True
+        return False
 
     def setDm(self, player, forceAdd=False):
         extrainfo = ""
@@ -194,7 +207,7 @@ class Quest(DBObject):
             return False, "You cannot play in a quest you are DMing"
         if len(self.players) >= self.playerSlots and not forceAdd:
             return False, "The quest is full"
-        if Config.StampsToLevel(player.stamps) < self.levelReq and not forceAdd:
+        if not self.areTheyUpToIt(player) and not forceAdd:
             return False, "Your level does not meet the quest requirements"
         if player.discordId in self.players.keys() and not forceAdd:
             return False, "You are already on this quest as an officer"
@@ -345,6 +358,7 @@ class Database:
                 player.stamps += quest.stampReward
                 player.influence += quest.influenceReward
                 player.leadership += quest.leadershipReward
+                player.pointsToSpend += quest.pointReward
                 self.setPlayer(player)
 
                 if player.getLevel() > startLevel:

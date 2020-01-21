@@ -35,6 +35,15 @@ hr:not(.card-body) {
     vertical-align: text-bottom;
 }
 
+@keyframes textPulse {
+    0% {opacity: 0;}
+    50% {opacity: 1;}
+    100% {opacity: 0;}
+}
+.pulse {
+    animation: textPulse 2s infinite;
+}
+
 .sidebar {
     position: fixed;
     top: 0;

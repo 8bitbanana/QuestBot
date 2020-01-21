@@ -21,8 +21,8 @@
                 </div>
                 <hr>
                 <p>Level: {{ quest.levelReq }} | 
-                {% if quest.stampReward == quest.Stamp.BRONZE %}
-                Stamp: Bronze
+                {% if quest.stampReward == quest.Stamp.COPPER %}
+                Stamp: Copper
                 {% elif quest.stampReward == quest.Stamp.SILVER %}
                 Stamp: Silver
                 {% elif quest.stampReward == quest.Stamp.GOLD %}
@@ -30,7 +30,7 @@
                 {% elif quest.stampReward == quest.Stamp.PLATINUM %}
                 Stamp: Platinum
                 {% else %}
-                Stamp: {{ quest.stampReward}} Bronze
+                Stamp: {{ quest.stampReward}} Copper
                 {% endif %}
                 </p>
                 <hr>
@@ -64,8 +64,8 @@
             <p>{{ quest.description }}</p>
             <hr>
             <p>Level: {{ quest.levelReq }} | 
-            {% if quest.stampReward == quest.Stamp.BRONZE %}
-            Stamp: Bronze
+            {% if quest.stampReward == quest.Stamp.COPPER %}
+            Stamp: Copper
             {% elif quest.stampReward == quest.Stamp.SILVER %}
             Stamp: Silver
             {% elif quest.stampReward == quest.Stamp.GOLD %}
@@ -73,7 +73,7 @@
             {% elif quest.stampReward == quest.Stamp.PLATINUM %}
             Stamp: Platinum
             {% else %}
-            Stamp: {{ quest.stampReward}} Bronze
+            Stamp: {{ quest.stampReward}} Copper
             {% endif %}
             <hr>
             <div class="text-center">

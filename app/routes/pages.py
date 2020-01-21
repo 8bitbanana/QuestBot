@@ -49,6 +49,7 @@ def questControlMenu():
             if quest.questId == currentQuestId:
                 currentQuest = quest
     playerDict = {player.discordId:player for player in db.getAllPlayers()}
+    print(playerDict)
     return render_template("controlcenter.html",
         player=player,
         quests=quests,

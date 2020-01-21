@@ -19,7 +19,7 @@
             <div class="form-row">
                 <div class="col"><label class="text-truncate">Location</label><input class="form-control" type="text" name="location" required="" value="{{ prefill.location }}"></div>
                 <div class="col"><label class="text-truncate">Contractor</label><input class="form-control" type="text" name="giver" required="" value="{{ prefill.giver }}"></div>
-                <div class="col"><label class="text-truncate">Spoils</label><input class="form-control" type="text" name="reward" required="" value="{{ prefill.reward }}"></div>
+                <div class="col"><label class="text-truncate">Spoils (currently unused)</label><input class="form-control" type="text" name="reward" required="" value="{{ prefill.reward }}"></div>
             </div>
         </div>
         <div class="form-group">
@@ -28,16 +28,15 @@
                 <div class="col"><label class="text-truncate">Officer Slots</label><input class="form-control" type="number" name="playerSlots" required="" value="{{ prefill.playerSlots }}" name="Player Slots" min="0"></div>
                 <div class="col"><label class="text-truncate">Commander Lds Cost</label><input class="form-control" type="number" name="leadershipReq" required="" value="{{ prefill.leadershipReq }}" name="Leadership Cost" min="0"></div>
                 <div class="col">
-                    <label class="text-truncate">Stamp Reward</label>
+                    <label class="text-truncate">Stamp</label>
                     <select class="form-control" name="stampReward">
-                        <option {% if prefill.stampReward == 1 %}selected {% endif %}value="1">Bronze</option>
+                        <option {% if prefill.stampReward == 1 %}selected {% endif %}value="1">Copper</option>
                         <option {% if prefill.stampReward == 2 %}selected {% endif %}value="2">Silver</option>
                         <option {% if prefill.stampReward == 4 %}selected {% endif %}value="4">Gold</option>
                         <option {% if prefill.stampReward == 8 %}selected {% endif %}value="8">Platinum</option>
                     </select>
                 </div>
-                <div class="col"><label class="text-truncate">Influence Reward</label><input class="form-control" type="number" name="influenceReward" required="" value="{{ prefill.influenceReward }}" name="Influence Reward" min="0"></div>
-                <div class="col"><label class="text-truncate">Leadership Reward</label><input class="form-control" type="number" name="leadershipReward" required="" value="{{ prefill.leadershipReward }}" name="Leadership Reward" min="0"></div>
+                <div class="col"><label class="text-truncate">Company Point Reward</label><input class="form-control" type="number" name="pointReward" required="" value="{{ prefill.pointReward }}" min="0"></div>
                 <div class="col"><label class="text-truncate">Dungeon Master</label>
                     <select class="form-control" name="dm">
                         {% if DM %}

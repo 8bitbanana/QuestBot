@@ -1,39 +1,5 @@
 {% extends "base.html" %}
 
-{% macro roleModal(role) %}
-<h4>{{ role['name'] }}</h4>
-<p>{{ role['desc']|safe }}</p>
-{% if role['requirements']|length > 0 %}
-    <hr>
-    <em>Prerequisites</em>
-    <ul>
-    {% for requirement in role['requirements'] %}
-        <li>{{ requirement|safe }}</li>
-    {% endfor %}
-    </ul>
-{% endif %}
-{% if role['cost'] != 0 %}
-<p><strong>Costs {{ role['cost'] }} leadership to claim.</strong></p>
-{% endif %}
-{% if role['passives']|length > 0 %}
-    <hr>
-    <h5>Role Effects</h5>
-    {% for passive in role['passives'] %}
-        <ul><li>{{ passive['name'] }}</li></ul>
-        <p>{{ passive['desc']|safe }}</p>
-    {% endfor %}
-{% endif %}
-{% if role['actives']|length > 0 %}
-    <hr>
-    <h5>Role Powers</h5>
-    {% for active in role['actives'].values() %}
-        <ul><li>{{ active['name'] }}</li></ul>
-        <p><em>Cost: {{ active['cost'] }} leadership</em></p>
-        <p>{{ active['desc']|safe }}</p>
-    {% endfor %}
-{% endif %}
-{% endmacro %}
-
 {% block title %}Control Center{% endblock %}
 {% block css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/questboard.css') }}">
@@ -51,7 +17,14 @@
     </div>
 </div>
 <div>
-    {% if currentQuest.players[player.discordId] == None %}
+    {% if currentQuest.commander == player.discordId %}
+    <p class="infomessage">
+        You are this quests commander.<br>
+        <br>
+        The commander has no role powers. However, they have the final say on any group decision - but is obligated (unless under extreme duress or lack of time) to consult their decision with their allies.<br>
+        Abuse of this power will result in reprimands from higher-ups in the company.
+    </p>
+    {% elif currentQuest.players[player.discordId] == None %}
 
     <p class="infomessage">
         You do not have a role in this quest yet.
@@ -95,7 +68,37 @@
     <div style="display:none">
         {% for roleId, role in roles.items() %}
         <div id="{{roleId}}-desc">
-            {{ roleModal(role) }}
+            <h4>{{ role['name'] }}</h4>
+            <p>{{ role['desc']|safe }}</p>
+            {% if role['requirements']|length > 0 %}
+                <hr>
+                <em>Prerequisites</em>
+                <ul>
+                {% for requirement in role['requirements'] %}
+                    <li>{{ requirement|safe }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+            {% if role['cost'] != 0 %}
+            <p><strong>Costs {{ role['cost'] }} leadership to claim.</strong></p>
+            {% endif %}
+            {% if role['passives']|length > 0 %}
+                <hr>
+                <h5>Role Effects</h5>
+                {% for passive in role['passives'] %}
+                    <ul><li>{{ passive['name'] }}</li></ul>
+                    <p>{{ passive['desc']|safe }}</p>
+                {% endfor %}
+            {% endif %}
+            {% if role['actives']|length > 0 %}
+                <hr>
+                <h5>Role Powers</h5>
+                {% for activeId, active in role['actives'].items() %}
+                    <ul><li>{{ active['name'] }}</li></ul>
+                    <p><em>Cost: {{ active['cost'] }} leadership</em></p>
+                    <p>{{ active['desc']|safe }}</p>
+                {% endfor %}
+            {% endif %}
         </div>
         {% endfor %}
     </div>

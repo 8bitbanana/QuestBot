@@ -288,3 +288,18 @@ def updateSelfStats():
         player.leadership = formData['leadership']
     db.setPlayer(player)
     return redirect(request.referrer or "/")
+
+@app.route("/spendPoints", methods=['POST'])
+@needPlayerAuth
+def spendCompanyPoints():
+    logAction()
+    influence = int(request.form['influence'])
+    leadership = int(request.form['leadership'])
+    discordId = session.get("discordId")
+    player = db.getPlayer(discordId)
+    result, message = player.spendPoints(influence, leadership)
+    db.setPlayer(player)
+    if result:
+        return redirect(request.referrer or "/")
+    else:
+        return message, 400

@@ -10,11 +10,11 @@
             <hr>
             <p>{{ quest.description }}</p>
             <hr>
-            <p>Location: {{ quest.location }} | Contractor: {{ quest.giver }} | Spoils: {{ quest.reward }}</p>
+            <p>Location: {{ quest.location }}<br>Contractor: {{ quest.giver }}</p>
             <hr>
             <p>Level: {{ quest.levelReq }} | 
-            {% if quest.stampReward == quest.Stamp.BRONZE %}
-            Stamp: Bronze
+            {% if quest.stampReward == quest.Stamp.COPPER %}
+            Stamp: Copper
             {% elif quest.stampReward == quest.Stamp.SILVER %}
             Stamp: Silver
             {% elif quest.stampReward == quest.Stamp.GOLD %}
@@ -22,7 +22,7 @@
             {% elif quest.stampReward == quest.Stamp.PLATINUM %}
             Stamp: Platinum
             {% else %}
-            Stamp: {{ quest.stampReward}} Bronze
+            Stamp: {{ quest.stampReward}} Copper
             {% endif %}
             </p>
             <p>
@@ -49,8 +49,8 @@
                         <a class="btn btn-light disabled">You are DMing</a>
                     {% elif player.leadership < quest.leadershipReq %}
                         <a class="btn btn-light disabled">Leadership too low</a>
-                    {% elif player.getLevel() < quest.levelReq %}
-                        <a class="btn btn-light disabled">Level too low</a>
+                    {% elif not quest.areTheyUpToIt(player) %}
+                        <a class="btn btn-light disabled">Level too high/low</a>
                     {% else %}
                         <a onclick="confirm('Are you sure you want <strong>claim</strong> the responsibility of commander for this quest?<br><em>{{quest.title|jsescape}}</em><br>This will cost <strong>{{quest.leadershipReq}}</strong> of your {{player.leadership}} Leadership.{%if player.discordId in quest.players%}<br>This will <strong>replace your current position in the quest\'s players</strong>.{%endif%}', ()=>qba('claimCommander', '{{ quest.questId }}'))" class="btn btn-light">Claim Commander</a>
                     {% endif %}
@@ -74,9 +74,9 @@
                     {% if player.discordId == quest.dm %}
                         <a class="btn btn-light disabled">You are DMing</a>
                     {% elif quest.players|length >= quest.playerSlots %}
-                        <a class="btn btn-light disabled">Quest if full</a>
-                    {% elif player.getLevel() < quest.levelReq %}
-                        <a class="btn btn-light disabled">Level too low</a>
+                        <a class="btn btn-light disabled">Quest is full</a>
+                    {% elif not quest.areTheyUpToIt(player) %}
+                        <a class="btn btn-light disabled">Level too high/low</a>
                     {% else %}
                         <a onclick="confirm('Are you sure you want to <strong>join</strong> this quest?<br><em>{{quest.title|jsescape}}</em>{%if quest.commander == player.discordId%}<br>This will <strong>releave your current commander position</strong>.{%endif%}', ()=>qba('joinQuest', '{{ quest.questId }}'))" class="btn btn-light">Join Quest</a>
                     {% endif %}
@@ -92,9 +92,9 @@
     {% block footer %}
     {% if quests|length > 0 %}
     <script>
-        function qba(action, questId, discordId=null) {
+        function qba(action, questId) {
             $.post(
-                "/questBoardAction/"+action+"?questId="+questId+"&discordId="+discordId
+                "/questBoardAction/"+action+"?questId="+questId
             ).fail(function (data) {
                 alert("Server error - " + data.responseText + "\nTry reloading the page");
             }).done(function (data) {
