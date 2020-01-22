@@ -50,6 +50,21 @@ def needAccessToQuest(func):
         return "You do not have write access to this quest", 403
     return wrapper
 
+def needCommanderToQuest(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        player = db.getPlayer(session.get("discordId"))
+        questId = request.args.get("questId") or request.form.to_dict().get("questId")
+        if questId == None:
+            return func(*args,)
+        quest = db.getQuest(questId)
+        if quest == None:
+            return func(*args, **kwargs)
+        if player.admin or quest.commander == player.discordId or quest.dm == player.discordId:
+            return func(*args, **kwargs)
+        return "You do not have write access to this quest", 403
+    return wrapper
+
 def needDM(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):

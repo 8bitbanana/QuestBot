@@ -171,7 +171,7 @@ def delQuest():
 
 @app.route("/setDateSubmit", methods=['POST'])
 @needPlayerAuth
-@needAccessToQuest
+@needCommanderToQuest
 def setDateSubmit():
     logAction()
     quest = db.getQuest(request.form.to_dict().get("questId"))
@@ -195,7 +195,7 @@ def setDateSubmit():
 
 @app.route("/unsetdate", methods=['POST'])
 @needPlayerAuth
-@needAccessToQuest
+@needCommanderToQuest
 def unsetDate():
     logAction()
     quest = db.getQuest(request.args['questId'])

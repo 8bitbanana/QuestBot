@@ -49,7 +49,6 @@ def questControlMenu():
             if quest.questId == currentQuestId:
                 currentQuest = quest
     playerDict = {player.discordId:player for player in db.getAllPlayers()}
-    print(playerDict)
     return render_template("controlcenter.html",
         player=player,
         quests=quests,
@@ -144,7 +143,7 @@ def addQuestPageDM():
 
 @app.route("/setdate")
 @needPlayerAuth
-@needAccessToQuest
+@needCommanderToQuest
 @needDM
 def setDatePage():
     player = db.getPlayer(session.get("discordId"))
