@@ -2,6 +2,8 @@ from flask import Flask
 from database import Database
 from configuration import Config
 
+import subprocess
+
 db = Database()
 db.regeneratePlayers()
 db.regenerateQuests()
@@ -19,5 +21,14 @@ def jsescape(s):
         s = s.replace("\'", "\\\'")
         s = s.replace("\"", "\\\"")
     return s
+
+@app.template_global()
+def vscodedetect():
+    ps = subprocess.Popen(["/bin/ps", "aux"], stdout=subprocess.PIPE)
+    try:
+        grep = subprocess.check_output(["/bin/grep", "[n]ode.*vscode-server.*watcherService"], stdin=ps.stdout)
+    except subprocess.CalledProcessError:
+        return False
+    return True
 
 from app.routes import util, api, pages

@@ -158,7 +158,6 @@ def setDatePage():
 
 @app.route("/logincallback")
 def discordlogin():
-    logAction()
     error = request.args.get("error")
     if error:
         return ("", 403)
@@ -181,6 +180,7 @@ def discordlogin():
 
     session['discordId'] = user_id
     session.permanent = True
+    logAction()
     return redirect("/", code=302)
 
 @app.route("/logout")

@@ -142,6 +142,11 @@
                                 {% endif %}
                                 <p><a href="#" onclick="statUpdateModal()">Update Directly</a></p>
                             </li>
+                            {% if vscodedetect() %}
+                            <li class="nav-item admin-item">
+                                VS Code is currently connected.<br>I may be fixing/breaking stuff!
+                            </li>
+                            {% endif %}
                         </ul>
                     </div>
                 </nav>
