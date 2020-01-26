@@ -33,7 +33,8 @@ class Client(discord.Client):
         else:
             raise FileNotFoundError("The bot is not in the correct guild")
         
-        self.announceChannel = self.get_channel(announceChannelId)
+        self.announceChannel = self.get_channel(config.BotAnnounceChannel)
+        self.voyagesChannel = self.get_channel(config.BotVoyagesChannel)
 
         self.updateMemberDB()
 
@@ -66,7 +67,7 @@ class Client(discord.Client):
                     description=f"*DMed by {dm}*\n{quest.description}",
                     url="https://quest.ethancrooks.com"
                 )
-                await self.announceChannel.send(f"@everyone A new Quest is now available!", embed=embed)
+                await self.voyagesChannel.send(f"@everyone A new Quest is now available!", embed=embed)
                 #twitter.PostUpdate(f"A new quest is available!\n{quest.title[:200]}")
 
 

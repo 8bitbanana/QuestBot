@@ -61,9 +61,9 @@ class Player(DBObject):
     def __init__(self, discordId=None, nick=None, jsonData=None):
         self.discordId = None
         self.nick = None
-        self.influence = 300
-        self.leadership = 25
-        self.stamps = 8
+        self.influence = 0
+        self.leadership = 0
+        self.stamps = 7
         self.pointsToSpend = 0
         if discordId:
             self.discordId = discordId
@@ -86,7 +86,6 @@ class Player(DBObject):
         self.leadership += lds
         self.pointsToSpend -= (inf+lds)
         return True, "Success"
-
 
     def getLevel(self):
         return Config.StampsToLevel(self.stamps)
@@ -317,6 +316,14 @@ class Database:
         task = self.db.lpop("ImmTasks")
         if task == None: return None
         return task.decode("utf-8")
+
+    # @waitForLock
+    # def pushTrigger(self, triggertime, command):
+    #     self.db.rpush("TimedTasks", str(triggertime) + " " + command)
+
+    # @waitForLock()
+    # def popTriggers(self):
+        
 
     @waitForLock
     def popAllTasks(self):
