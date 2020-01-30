@@ -47,6 +47,7 @@
         <title>{{ titlemacro() }}</title>
 
         <link rel="stylesheet" href="{{ url_for('static', filename='lib/css/bootstrap.min.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='lib/css/fontawesome.min.css') }}">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/fonts.css') }}">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
         {% block css %}
@@ -105,7 +106,7 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link active" href="/controlcenter">
+                                <a class="nav-link active {% if roleUnpicked(player.discordId) %}pulse{% endif %}" href="/controlcenter">
                                     The Armoury
                                 </a>
                             </li>
@@ -141,6 +142,19 @@
                                     <p><a href="#" class="pulse" onclick="pointModal()">You have points to spend!</a></p>
                                 {% endif %}
                                 <p><a href="#" onclick="statUpdateModal()">Update Directly</a></p>
+                            </li>
+                            <li class="nav-column">
+                                <div class="nav-columnitem">
+                                    <a href="https://www.gmbinder.com/share/-LyZUQuroAa5y_gi2LxG" target="_blank">
+                                        <p>Company Handbook</p>
+                                    </a>
+                                </div>
+                                <div class="nav-columnspacer"></div>
+                                <div class="nav-columnitem">
+                                    <a href="https://ethancrooks.com/dnd" target="_blank">
+                                        <p>Spellbook</p>
+                                    </a>
+                                </div>
                             </li>
                             {% if vscodedetect() %}
                             <li class="nav-item admin-item">

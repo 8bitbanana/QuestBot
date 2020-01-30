@@ -228,8 +228,8 @@ def addQuest():
         quest = Quest(jsonData=json.dumps(formData))
         newquest = True
     db.setQuest(quest)
-    if newquest and quest.dm != None:
-        db.pushTask("NEWQUEST " + quest.questId)
+    # if newquest and quest.dm != None:
+    #     db.pushTask("NEWQUEST " + quest.questId)
     return redirect("/questadmin", code=302)
 
 @app.route("/setquestDMsubmit", methods=['POST'])

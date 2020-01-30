@@ -35,6 +35,7 @@ class Client(discord.Client):
         
         self.announceChannel = self.get_channel(config.BotAnnounceChannel)
         self.voyagesChannel = self.get_channel(config.BotVoyagesChannel)
+        self.generalChannel = self.get_channel(config.BotGeneralChannel)
 
         self.updateMemberDB()
 

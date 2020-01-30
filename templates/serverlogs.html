@@ -22,9 +22,21 @@
         </div>
     </div>
     <hr>
+    <a id="togglebtn" onclick="toggleHovers()" class="btn btn-light">Toggle Hovers</a>
     <ul>
     {% for line in logs %}
-        <li>{{ line }}</li>
+        <li>{{ line|safe }}</li>
     {% endfor %}
     </ul>
+<script>
+    hovers = true;
+    function toggleHovers() {
+        hovers = !hovers;
+        if (hovers) {
+            $(".innerdiv.nick").css("display", "");
+        } else {
+            $(".innerdiv.nick").css("display", "none")
+        }
+    }
+</script>
 {% endblock %}

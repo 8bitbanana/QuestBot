@@ -1,4 +1,4 @@
-from flask import render_template, redirect
+from flask import render_template, redirect, send_file
 import subprocess, requests
 
 from app.routes.util import *
@@ -18,17 +18,33 @@ def index():
         roles=Roles
     )
 
+@app.route("/roles.json")
+def rolesJson():
+    return send_file("../roles.json")
+
 @app.route("/actionlogs")
 @needPlayerAuth
 @needAdmin
 def actionLogs():
     logs = subprocess.check_output(['/usr/bin/tail', '-20', './logs/questactions.log'])
     logs = logs.decode("utf-8").splitlines()[::-1]
+    players = db.getAllPlayers()
+    quests = db.getAllQuests()
+    for i, log in enumerate(logs):
+        for player in players:
+            logs[i] = logs[i].replace(str(player.discordId),
+            f"""
+            <div class="inlinediv discord-{player.discordId}">
+                <div class="innerdiv nick">{player.nick}</div>
+                <div class="innerdiv discordId">{player.discordId}</div>
+            </div>
+            """
+            )
     player = db.getPlayer(session.get("discordId"))
     return render_template("serverlogs.html",
         player=player,
-        players=db.getAllPlayers(),
-        quests=db.getAllQuests(),
+        players=players,
+        quests=quests,
         logs=logs
     )
 

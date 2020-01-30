@@ -66,7 +66,8 @@ hr:not(.card-body) {
 .statdisplay, .sidebar-sticky > .nav > .nav-item {
     margin-left: 16px;
     margin-right: 16px;
-    margin-top: 32px;
+    margin-top: 8px;
+    margin-bottom: 8px;
     padding: 5px;
     /*border: 1px solid white;*/
     border-radius: 5px;
@@ -76,6 +77,44 @@ hr:not(.card-body) {
     color: black;
     font-family: BookSanity;
 }
+.statdisplay, .sidebar-sticky > .nav > li:nth-child(1) {
+    margin-top: 16px;
+}
+
+.nav-column {
+    margin-top: 8px;
+    margin-bottom: 8px;
+    margin-left: 16px;
+    margin-right: 16px;
+    display: flex;
+    justify-content: center;
+}
+
+.nav-columnspacer {
+    width: 1rem;
+}
+
+.nav-columnitem {
+    flex-grow: 1;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #e6ddbe;
+    background-image: url("/static/img/homebrewery_bg.jpg");
+    color: black;
+    text-align: center;
+    color: black;
+    font-family: BookSanity;
+}
+
+.nav-columnitem > a {
+    display: flex;
+    text-decoration: none;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    color: #007bff; /*prevent colour change on hover*/
+}
+
 .admin-item > a {
     padding-top: 1px;
     padding-bottom: 1px;
@@ -85,7 +124,8 @@ hr:not(.card-body) {
     margin-left: 30px !important;
     margin-right: 30px !important;
     border: 3px darkred solid;
-    
+    margin-top: 8px !important;
+    margin-bottom: 8px !important;
 }
 .nav-item > * {
     margin: 0;
