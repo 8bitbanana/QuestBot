@@ -17,6 +17,9 @@ with open("roles.json") as f:
 class DBObject:
     def serialise(self):
         data = self.__dict__
+        for k, v in data.items():
+            if isinstance(v, DBObject):
+                data[k] = v.serialise()
         return json.dumps(data)
 
     def deserialise(self, data):
@@ -287,7 +290,19 @@ class Quest(DBObject):
             return False, "Player's role power is already fully refreshed."
         self.usedpowers.pop(player.discordId)
         return True, "Success"
-            
+
+class PastQuest(DBObject):
+    def __init__(self, quest, viewable=False):
+        self.quest = quest
+        self.viewable = viewable
+
+class ChronicleEntry(DBObject):
+    def __init__(self):
+        self.title = ""
+        self.subtitle = ""
+        self.author = None
+        self.entry = ""
+
 def waitForLock(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
