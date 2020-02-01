@@ -33,10 +33,30 @@ class DBObject:
         for key, value in data.items():
             if not hasattr(self, key):
                 continue
+            int_keys = [ # int keys are additionally checked for None or null
+                "discordId", "influence", "leadership",
+                "stamps", "levelReq", "leadershipReq",
+                "stampReward", "playerSlots", "dm",
+                "date", "influenceReward", "leadershipReward",
+                "pointsToSpend", "pointReward"
+            ]
+            bool_keys = ["admin", "canDM"]
             dict_int_keys = ["players", "usedpowers"]
             quest_keys = ["quest"]
             player_keys = []
             chronicle_keys = []
+            if key in int_keys:
+                try:
+                    value = int(value)
+                except Exception: # fuck you pylint
+                    if value == "None" or value == "null":
+                        value = None
+                    pass
+            if key in bool_keys:
+                try:
+                    value = bool(value)
+                except Exception:
+                    pass
             if type(value == dict):
                 if key in dict_int_keys:
                     value = {int(k):v for k, v in value.items()}
@@ -160,8 +180,9 @@ class Quest(DBObject):
         if player.leadership < self.leadershipReq and not forceAdd:
             return False, "You do not have enough leadership"
         if player.discordId in self.players.keys():
-            successReturn = "Success, removed from players"
-            self.removePlayer(player.discordId)
+            # successReturn = "Success, removed from players"
+            # self.removePlayer(player.discordId)
+            return False, "You cannot command and be a player at the same time."
         self.commander = player.discordId
         return True, successReturn
 
@@ -193,6 +214,8 @@ class Quest(DBObject):
 
     def addPlayer(self, player, removeCommander=True, forceAdd=False):
         successReturn = "Success"
+        if self.commander == None and not forceAdd:
+            return False, "The quest must have a commander before you join it."
         if self.dm == player.discordId and not forceAdd:
             return False, "You cannot play in a quest you are DMing"
         if len(self.players) >= self.playerSlots and not forceAdd:
@@ -202,8 +225,9 @@ class Quest(DBObject):
         if player.discordId in self.players.keys() and not forceAdd:
             return False, "You are already on this quest as an officer"
         if player.discordId == self.commander and removeCommander:
-            self.commander = None
-            successReturn = "Success, unset commander"
+            # self.commander = None
+            # successReturn = "Success, unset commander"
+            return False, "You are already set as the quest's commander"
         self.players[player.discordId] = None
         return True, successReturn
 

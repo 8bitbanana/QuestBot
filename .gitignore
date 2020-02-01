@@ -1,0 +1,8 @@
+*apikeys.json
+*__pycache__/*
+*.pyc
+*.vscode/*
+*logs/*
+*venv/*
+*.swp
+configuration.py

@@ -1,5 +1,5 @@
 {% extends "cards.html" %}
-{% block title %}Questboard{% endblock %}
+{% block title %}The Wall of Voyages{% endblock %}
 {% block cards %}
     {% for quest in quests if quest.dm != None %}
 
@@ -47,6 +47,8 @@
                 {% else %}
                     {% if player.discordId == quest.dm %}
                         <a class="btn btn-light disabled">You are DMing</a>
+                    {% elif player.discordId in quest.players.keys() %}
+                        <a class="btn btn-light disabled">You are already playing</a>
                     {% elif player.leadership < quest.leadershipReq %}
                         <a class="btn btn-light disabled">Leadership too low</a>
                     {% elif not quest.areTheyUpToIt(player) %}
@@ -75,10 +77,14 @@
                         <a class="btn btn-light disabled">You are DMing</a>
                     {% elif quest.players|length >= quest.playerSlots %}
                         <a class="btn btn-light disabled">Quest is full</a>
+                    {% elif player.discordId == quest.commander %}
+                        <a class="btn btn-light disabled">You are commanding</a>
                     {% elif not quest.areTheyUpToIt(player) %}
                         <a class="btn btn-light disabled">Level too high/low</a>
+                    {% elif quest.commander == None %}
+                        <a class="btn btn-light disabled">Commander Unclaimed</a>
                     {% else %}
-                        <a onclick="confirm('Are you sure you want to <strong>join</strong> this quest?<br><em>{{quest.title|jsescape}}</em>{%if quest.commander == player.discordId%}<br>This will <strong>releave your current commander position</strong>.{%endif%}', ()=>qba('joinQuest', '{{ quest.questId }}'))" class="btn btn-light">Join Quest</a>
+                        <a onclick="confirm('Are you sure you want to <strong>join</strong> this quest?<br><em>{{quest.title|jsescape}}</em>', ()=>qba('joinQuest', '{{ quest.questId }}'))" class="btn btn-light">Join Quest</a>
                     {% endif %}
                 {% endif %}
                 </p>
