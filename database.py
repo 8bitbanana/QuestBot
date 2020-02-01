@@ -33,31 +33,19 @@ class DBObject:
         for key, value in data.items():
             if not hasattr(self, key):
                 continue
-            # doing a javascript
-            # i'm so sorry
-            int_keys = [ # int keys are additionally checked for None or null
-                "discordId", "influence", "leadership",
-                "stamps", "levelReq", "leadershipReq",
-                "stampReward", "playerSlots", "dm",
-                "date", "influenceReward", "leadershipReward",
-                "pointsToSpend", "pointReward"
-            ]
-            bool_keys = ["admin", "canDM"]
             dict_int_keys = ["players", "usedpowers"]
-            if key in int_keys:
-                try:
-                    value = int(value)
-                except Exception: # fuck you pylint
-                    if value == "None" or value == "null":
-                        value = None
-                    pass
-            if key in bool_keys:
-                try:
-                    value = bool(value)
-                except Exception:
-                    pass
-            if type(value == dict) and key in dict_int_keys:
-                value = {int(k):v for k, v in value.items()}
+            quest_keys = ["quest"]
+            player_keys = []
+            chronicle_keys = []
+            if type(value == dict):
+                if key in dict_int_keys:
+                    value = {int(k):v for k, v in value.items()}
+                elif key in quest_keys:
+                    value = Quest(jsonData=value)
+                elif key in player_keys:
+                    value = Player(jsonData=value)
+                elif key in chronicle_keys:
+                    value = ChronicleEntry(jsonData=value)
             self.__setattr__(key, value)
 
 class Player(DBObject):
@@ -292,12 +280,28 @@ class Quest(DBObject):
         return True, "Success"
 
 class PastQuest(DBObject):
-    def __init__(self, quest, viewable=False):
-        self.quest = quest
-        self.viewable = viewable
+    def __init__(self, quest=None, viewable=False, jsonData=None):
+        self.quest = None
+        self.chronicleEntry = None
+        self.viewable = False
+        self.entryDate = None
+        if quest:
+            self.quest = quest
+            self.viewable = viewable
+            self.entryDate = int(time.time())
+        elif jsonData:
+            self.deserialise(jsonData)
+        else:
+            raise ValueError("Either supply quest or jsonData")
+
+    def getFormattedDate(self):
+        if self.entryDate == None: return "No date recorded"
+        tz = pytz.timezone(Config.TimeZone)
+        date = datetime.fromtimestamp(self.entryDate, tz)
+        return date.strftime(Config.DateFormat)
 
 class ChronicleEntry(DBObject):
-    def __init__(self):
+    def __init__(self, jsonData=None):
         self.title = ""
         self.subtitle = ""
         self.author = None
@@ -369,9 +373,9 @@ class Database:
         self.db.hset("Quests", quest.questId, quest.serialise())
 
     @waitForLock
-    def delQuest(self, questId, creditStamps=True):
+    def delQuest(self, questId, creditStamps=True, viewable=False):
+        quest = self.getQuest(questId)
         if creditStamps:
-            quest = self.getQuest(questId)
             playersToCredit = list(quest.players.keys())
             if quest.commander: playersToCredit.append(quest.commander)
             for playerId in playersToCredit:
@@ -385,6 +389,7 @@ class Database:
 
                 if player.getLevel() > startLevel:
                     self.pushTask("LEVELUP " + str(player.discordId))
+        self.addPastQuest(quest, viewable)
         self.db.hdel("Quests", questId)
 
     @waitForLock
@@ -402,6 +407,20 @@ class Database:
         for questId in data.keys():
             quest = Quest(jsonData=data[questId])
             quests.append(quest)
+        return quests
+
+    @waitForLock
+    def addPastQuest(self, quest, viewable=True):
+        entry = PastQuest(quest, viewable)
+        self.db.lpush("PastQuests", entry.serialise())
+
+    @waitForLock
+    def getPastQuests(self):
+        data = self.db.lrange("PastQuests", 0, -1)
+        quests = []
+        for dataentry in data:
+            entry = PastQuest(jsonData=dataentry)
+            quests.append(entry)
         return quests
 
     @waitForLock
@@ -434,11 +453,11 @@ class Database:
         memberDataDict = {str(x.id): x for x in memberData}
 
         # Remove ids from DB that shouldn't be there
-        for dbPlayerId in self.db.hgetall("Players").keys():
-            dbPlayerId = dbPlayerId.decode("utf-8")
-            if not dbPlayerId in memberDataDict.keys():
-                print(f"[SANITY] - Removing value {dbPlayerId}")
-                self.db.hdel("Players", dbPlayerId)
+        # for dbPlayerId in self.db.hgetall("Players").keys():
+        #     dbPlayerId = dbPlayerId.decode("utf-8")
+        #     if not dbPlayerId in memberDataDict.keys():
+        #         print(f"[SANITY] - Removing value {dbPlayerId}")
+        #         self.db.hdel("Players", dbPlayerId)
 
         # Change db player nicknames if they are wrong
         for dbPlayerId, dbPlayer in self.db.hgetall("Players").items():

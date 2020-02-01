@@ -18,6 +18,19 @@ def index():
         roles=Roles
     )
 
+@app.route("/thechronicle")
+def chronicle():
+    player = db.getPlayer(session.get("discordId"))
+    playerDict = {player.discordId:player for player in db.getAllPlayers()}
+    pastQuests = db.getPastQuests()
+    return render_template(
+        "thechronicle.html",
+        player=player,
+        playerDict=playerDict,
+        pastQuests=pastQuests,
+        roles=Roles
+    )
+
 @app.route("/roles.json")
 def rolesJson():
     return send_file("../roles.json")

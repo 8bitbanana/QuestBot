@@ -163,7 +163,7 @@ def delQuest():
     quest = db.getQuest(questId)
     if quest == None: abort(404)
     creditStamps = request.args.get('credit') == "1"
-    db.delQuest(request.args['questId'], creditStamps=creditStamps)
+    db.delQuest(request.args['questId'], creditStamps=creditStamps, viewable=creditStamps)
     if creditStamps:
         return "Success", 200
     else:

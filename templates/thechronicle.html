@@ -1,0 +1,89 @@
+{% extends "cards.html" %}
+{% block title %}The Chronicle{% endblock %}
+{% block cards %}
+
+    {% for pastquest in pastQuests if pastquest.viewable %}
+
+        {% set quest=pastquest.quest %}
+
+        <div class="card mb-4 spellcard" style="display: inherit">
+            <div class="card-body">
+                <h4>{{ quest.title }}</h4>
+                <hr>
+                <p>
+                    <em>Date Set: {{ quest.getFormattedDate() }}</em><br>
+                    <em>Date Logged: {{ pastquest.getFormattedDate() }}</em>
+                </p>
+                <hr>
+                <a onclick="pastQuestModal($(this).nextAll('.detailpopup').children().clone())" class="btn btn-light">View Full Details</a>
+                <hr>
+                <a class="btn btn-light disabled">View Chronicle Entry</a>
+                <div class="detailpopup" style="display:none">
+                    <div style="box-shadow:none" class="card-body">
+                        <h4>{{ quest.title }}</h4>
+                        <hr>
+                        <p>{{ quest.description }}</p>
+                        <hr>
+                        <p>Location: {{ quest.location }}<br>Contractor: {{ quest.giver }}</p>
+                        <hr>
+                        <p>
+                        {% if quest.stampReward == quest.Stamp.COPPER %}
+                        Stamp: Copper
+                        {% elif quest.stampReward == quest.Stamp.SILVER %}
+                        Stamp: Silver
+                        {% elif quest.stampReward == quest.Stamp.GOLD %}
+                        Stamp: Gold
+                        {% elif quest.stampReward == quest.Stamp.PLATINUM %}
+                        Stamp: Platinum
+                        {% else %}
+                        Stamp: {{ quest.stampReward}} Copper
+                        {% endif %}
+                        </p>
+                        <p>
+                            Rewards: {{ quest.getFormattedRewards() }}
+                        </p>
+                        <hr>
+                        <div class="text-center">
+                            {% if quest.dm %}
+                            <p><em>DMed by {{ playerDict[quest.dm].nick }}</em></p>
+                            {% else %}
+                                <p><em>No DM set</em></p>
+                            {% endif %}
+                            <p><em>{{ quest.getFormattedDate() }}</em></p>
+                            <p><em>{{ pastquest.getFormattedDate() }}</em></p>
+                        </div>
+                        <hr>
+                        <div>
+                            <p><strong>Participants</strong></p>
+                            <ul>
+                            {% if quest.commander %}
+                            <li>{{ playerDict[quest.commander].nick }} (Commander)</li>
+                            {% endif %}
+                            {% for discordId, roleId in quest.players.items() %}
+                            <li>{{ playerDict[discordId].nick }} {% if roleId %}({{ roles[roleId]['name'] }}){% endif %}</li>
+                            {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    {% else %}
+
+        <h2 class="dmheader">No quests recorded.</h2>
+
+    {% endfor %}
+
+{% endblock %}
+{% block footer %}
+<script>
+    function pastQuestModal(dialoghtml) {
+        bootbox.dialog({
+            message: dialoghtml,
+            backdrop: true,
+            onEscape: true
+        });
+    }
+</script>
+{% endblock %}

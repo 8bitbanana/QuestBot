@@ -13,7 +13,7 @@
         <div class="card mb-4 spellcard">
             <div class="card-body">
                 <h4>{{ quest.title }}</h4>
-                <p><a href="addquest?questId={{ quest.questId }}">Edit</a> <a onclick="deleteQuest('{{ quest.questId|jsescape }}', false)" href="#">Delete</a> <a onclick="deleteQuest('{{ quest.questId|jsescape }}', true)" href="#">Complete</a></p>
+                <p><a href="addquest?questId={{ quest.questId }}">Edit</a> <a onclick="confirm('Are you sure? This will not credit rewards.',()=>deleteQuest('{{ quest.questId|jsescape }}', false))" href="#">Delete</a> <a onclick="confirm('Are you sure?',()=>deleteQuest('{{ quest.questId|jsescape }}', true))" href="#">Complete</a></p>
                 <hr>
                 {% if quest.date %}
                 <p title="{{ quest.getFormattedUTCDate() }} (UTC)">{{ quest.getFormattedDate() }} <a href="setdate?questId={{ quest.questId }}">Set</a> <a href="#" onclick="unsetQuestDate('{{ quest.questId|jsescape }}')">Unset</a></p>

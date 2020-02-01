@@ -145,7 +145,8 @@ class Client(discord.Client):
             player = Player(member.id, member.nick)
         db.setPlayer(player)
     async def on_member_remove(self, member):
-        db.delPlayer(member.id)
+        # db.delPlayer(member.id)
+        pass
     async def on_member_update(self, before, after):
         if before.nick != after.nick:
             player = db.getPlayer(after.id)
