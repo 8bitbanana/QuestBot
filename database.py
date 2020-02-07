@@ -129,6 +129,7 @@ class Quest(DBObject):
         self.leadershipReward = 15
         self.stampReward = self.Stamp.SILVER
         self.commander = None
+        self.commanderRole = None
         self.players = {}
         self.playerSlots = 3
         self.dm = None
@@ -246,21 +247,31 @@ class Quest(DBObject):
         return True, "Success"
 
     def getRole(self, roleIdToGet):
+        if self.commander != None and self.commanderRole == roleIdToGet:
+            return self.commander
         for discordId, roleId in self.players.items():
             if roleId == roleIdToGet:
                 return discordId
         return None
 
+    def getPlayerRole(self, player):
+        if player.discordId == self.commander:
+            return self.commanderRole
+        else:
+            return self.players.get(player.discordId)
+
     def setRole(self, player, roleId, forceAdd=False):
-        if not player.discordId in self.players.keys():
-            if player.discordId == self.commander:
-                return False, "The commander cannot have a role"
-            else:
-                return False, "Player is not in quest"
+        if not player.discordId in self.players.keys() and not player.discordId == self.commander:
+            return False, "Player is not in quest"
         if roleId == None:
-            if self.players[player.discordId] == None and not forceAdd:
+            if self.getPlayerRole(player) == None and not forceAdd:
                 return False, "This player's role is already unset"
-            self.players[player.discordId] = None
+
+            if self.commander == player.discordId:
+                self.commanderRole = roleId
+            else:
+                self.players[player.discordId] = roleId
+
             if self.usedpowers.get(player.discordId):
                 self.usedpowers.pop(player.discordId)
             return True, "Success, role unset" 
@@ -272,13 +283,21 @@ class Quest(DBObject):
                 return False, "This role is already claimed"
             if player.influence < role['cost'] and not forceAdd:
                 return False, "Player has insufficient influence"
-            self.players[player.discordId] = roleId
+
+            if self.commander == player.discordId:
+                self.commanderRole = roleId
+            else:
+                self.players[player.discordId] = roleId
+                
             if self.usedpowers.get(player.discordId):
                 self.usedpowers.pop(player.discordId)
             return True, "Success"
 
     def activateRolePower(self, player, activeId):
-        roleId = self.players.get(player.discordId)
+        if self.commander == player.discordId:
+            roleId = self.commanderRole
+        else:
+            roleId = self.players.get(player.discordId)
         if roleId == None:
             return False, "Player is not in quest, or does not have a role."
         role = Roles[roleId]
@@ -296,7 +315,9 @@ class Quest(DBObject):
         return True, "Success"
 
     def refreshPlayerRole(self, player):
-        if not self.players.get(player.discordId):
+        if not self.players.get(player.discordId) and \
+            player.discordId != self.commander and \
+            self.commanderRole == None:
             return False, "Player is not in quest, or does not have a role."
         if not self.usedpowers.get(player.discordId):
             return False, "Player's role power is already fully refreshed."

@@ -53,7 +53,7 @@ def controlCenterAction(action):
             role = Roles[roleId]
             player.leadership -= role['cost']
     elif action == "releaveRole":
-        roleId = quest.players.get(int(discordId))
+        roleId = quest.getPlayerRole(player)
         result, message = quest.setRole(player, None)
         if result:
             role = Roles[roleId]
@@ -62,7 +62,7 @@ def controlCenterAction(action):
         activeId = request.args['activeId']
         result, message = quest.activateRolePower(player, activeId)
         if result:
-            active = Roles[quest.players[int(discordId)]]['actives'][activeId]
+            active = Roles[quest.getPlayerRole(player)]['actives'][activeId]
             player.leadership -= active['cost']
     else:
         return "Unknown action", 400

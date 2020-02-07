@@ -24,6 +24,10 @@
                 <p style="margin-bottom: 0">Commander</p>
                 {% set jsfunction="qaa('changeCommander', '"+quest.questId|string|jsescape + "', this.value)" %}
                 {{ playerSelect(playerDict, quest.commander, "commander", onChange=jsfunction)}}
+                {% if quest.commander %}
+                {% set jsfunction="qaa('changeRole', '"+quest.questId|string + "', '"+ quest.commander|string+"', this.value)" %}
+                {{ roleSelect(roles, quest.commanderRole, "roleSelect", unselectedText="No Role", onChange=jsfunction) }}
+                {% endif %}
                 <hr>
                 <p style="margin-bottom: 0">DM</p>
                 {% set jsfunction="qaa('changeDM', '"+quest.questId|string|jsescape + "', this.value)" %}

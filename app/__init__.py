@@ -36,6 +36,8 @@ def roleUnpicked(discordId):
     for quest in db.getAllQuests():
         if discordId in quest.players.keys() and quest.players[discordId] == None:
             return True
+        if discordId == quest.commander and quest.commanderRole == None:
+            return True
     return False
 
 from app.routes import util, api, pages

@@ -16,8 +16,8 @@
                 </p>
                 <hr>
                 <a onclick="pastQuestModal($(this).nextAll('.detailpopup').children().clone())" class="btn btn-light">View Full Details</a>
-                <hr>
-                <a class="btn btn-light disabled">View Chronicle Entry</a>
+                <!-- <hr> -->
+                <!-- <a class="btn btn-light disabled">View Chronicle Entry</a> -->
                 <div class="detailpopup" style="display:none">
                     <div style="box-shadow:none" class="card-body">
                         <h4>{{ quest.title }}</h4>
@@ -57,7 +57,7 @@
                             <p><strong>Participants</strong></p>
                             <ul>
                             {% if quest.commander %}
-                            <li>{{ playerDict[quest.commander].nick }} (Commander)</li>
+                            <li>{{ playerDict[quest.commander].nick }} (Commander) {% if quest.commanderRole != None %}({{ roles[quest.commanderRole]['name']}}){% endif %}</li>
                             {% endif %}
                             {% for discordId, roleId in quest.players.items() %}
                             <li>{{ playerDict[discordId].nick }} {% if roleId %}({{ roles[roleId]['name'] }}){% endif %}</li>

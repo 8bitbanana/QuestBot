@@ -42,10 +42,10 @@
                 <p style="margin-bottom:0"><strong>Commander</strong> ({{ quest.leadershipReq }}Ls)</p>
                 {% if quest.commander == player.discordId %}
                     <a onclick="confirm('Are you sure you want to <strong>releave</strong> the responsibility of commander for this quest?<br><em>{{quest.title|jsescape}}</em><br>This will refund the <strong>{{quest.leadershipReq}}</strong> Leadership you spent.', ()=>qba('releaveCommander', '{{ quest.questId }}'))" class="btn btn-light">{{ player.nick }} (Releave Commander)</a>
-                {% elif quest.commander %}
-                    <a class="btn btn-light">{{ playerDict[quest.commander].nick }}</a>
                 {% else %}
-                    {% if player.discordId == quest.dm %}
+                    {% if quest.commander %}
+                        <a class="btn btn-light disabled">{{ playerDict[quest.commander].nick }}</a>
+                    {% elif player.discordId == quest.dm %}
                         <a class="btn btn-light disabled">You are DMing</a>
                     {% elif player.discordId in quest.players.keys() %}
                         <a class="btn btn-light disabled">You are already playing</a>
@@ -59,6 +59,11 @@
                 {% endif %}
             </div>
             <hr>
+            {% if quest.commander %}
+            <p>Commander: {{ playerDict[quest.commander].nick }}{% if quest.commanderRole %} ({{roles[quest.commanderRole]['name']}}){% endif %}</p>
+            {% else %}
+            <p>Commander unclaimed</p>
+            {% endif %}
             <p>{{ quest.players|length }}/{{ quest.playerSlots }} players</p>
             <ul>
             {% for questPlayer in quest.players %}
