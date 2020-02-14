@@ -308,10 +308,10 @@ class Quest(DBObject):
             return False, "Invalid active ID for this role"
         if player.leadership < active['cost']:
             return False, "Player does not have enough leadership to activate this power"
-        if self.usedpowers.get(player.discordId):
-            self.usedpowers[player.discordId] += 1
-        else:
-            self.usedpowers[player.discordId] = 1
+        # if self.usedpowers.get(player.discordId):
+        #     self.usedpowers[player.discordId] += 1
+        # else:
+        #     self.usedpowers[player.discordId] = 1
         return True, "Success"
 
     def refreshPlayerRole(self, player):

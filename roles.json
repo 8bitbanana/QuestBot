@@ -1,17 +1,4 @@
 {
-    "lieutenant":{
-        "name": "Lieutenant",
-        "desc": "Whilst the commander leads the quest in terms of decision making, the lieutenant leads the quest in terms of battle. Forming strategy and mastering the battlefield is their goal.",
-        "passives": [
-            {
-                "name": "Field Control",
-                "desc": "When you roll initiative, choose any two allies that can see or hear you. Swap their initiatives."
-            }
-        ],
-        "actives": {},
-        "requirements": [],
-        "cost": 0
-    },
     "antiquarian":{
         "name": "Antiquarian",
         "desc":"Able to keep track of gathered loot on a quest, the antiquarian is a treasurer of sorts, maintaining the quest-goer’s spoils, and appraising anything they look at.",

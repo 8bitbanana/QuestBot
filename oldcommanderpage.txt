@@ -1,0 +1,23 @@
+{% if currentQuest.commander == player.discordId %}
+    <p class="infomessage">
+        You are this quests commander.<br>
+        <br>
+        The commander has no role powers. However, they have the final say on any group decision - but is obligated (unless under extreme duress or lack of time) to consult their decision with their allies.<br>
+        Abuse of this power will result in reprimands from higher-ups in the company.
+        <br><br>
+        <a class="btn btn-light" href="/setdate?questId={{currentQuest.questId}}">Set Date</a>
+        {% if currentQuest.date != None %}
+        <a class="btn btn-light" href="#" onclick="unsetQuestDate('{{currentQuest.questId}}')">Unset Date</a>
+        <script>
+            function unsetQuestDate(questId) {
+                $.post(
+                    "/unsetdate?questId=" + questId
+                ).fail(function (data) {
+                    alert("Server error - " + data.responseText + "\nTry refreshing the page");
+                }).done(function (data) {
+                    location.reload(true);
+                });
+            };
+        </script>
+        {% endif %}
+    </p>
