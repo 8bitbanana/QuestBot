@@ -101,6 +101,9 @@ class Player(DBObject):
     def getLevel(self):
         return Config.StampsToLevel(self.stamps)
 
+    def StampTotalToNextLevel(self):
+        return Config.LevelToStamps(self.getLevel()+1)
+
     def __repr__(self):
         return f"<User {self.nick}>"
 
@@ -125,8 +128,8 @@ class Quest(DBObject):
         self.description = ""
         self.reward = ""
         self.pointReward = 0
-        self.influenceReward = 100
-        self.leadershipReward = 15
+        # self.influenceReward = 100
+        # self.leadershipReward = 15
         self.stampReward = self.Stamp.SILVER
         self.commander = None
         self.commanderRole = None
@@ -427,8 +430,8 @@ class Database:
                 player = self.getPlayer(playerId)
                 startLevel = player.getLevel()
                 player.stamps += quest.stampReward
-                player.influence += quest.influenceReward
-                player.leadership += quest.leadershipReward
+                # player.influence += quest.influenceReward
+                # player.leadership += quest.leadershipReward
                 player.pointsToSpend += quest.pointReward
                 self.setPlayer(player)
 

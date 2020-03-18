@@ -1,0 +1,8 @@
+{
+    "Arcane Meal":"You gain a bonus to damage with spells equal to your level. This bonus is halved on spells that target more than one creature.",
+    "Chilled Meal":"You suffer no penalty from hot climates.",
+    "Hearty Meal":"Whenever you would be healed, roll the dice twice, taking the higher of the two results.",
+    "Mighty Meal":"You add +1 to attack rolls with weapon attacks.",
+    "Spicy Meal":"You suffer no penalty from cold climates.",
+    "Tough Meal":"Your current hit points and your hit point maximum increased by an amount equal to your level."
+}

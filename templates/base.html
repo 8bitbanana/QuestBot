@@ -140,7 +140,7 @@
                             </li>
                             {% endif %}
                             <li class="nav-item">
-                                <p>Level: {{ player.getLevel() }}</p>
+                                <p>Level: {{ player.getLevel() }} ({{ player.stamps }}/{{ player.StampTotalToNextLevel() }})</p>
                                 <p>Influence: {{ player.influence }}</p>
                                 <p>Leadership: {{ player.leadership }}</p>
                                 {% if player.pointsToSpend > 0 %}

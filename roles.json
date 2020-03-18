@@ -99,7 +99,7 @@
         "actives": {
             "flankingmanoeuvre": {
                 "name": "Flanking Manoeuvre",
-                "desc": "You and any allies within 30 feet of you may move up to half your speed without provoking attacks of opportunity.",
+                "desc": "As a bonus action, you and any allies within 30 feet of you may move up to half your speed without provoking attacks of opportunity.",
                 "cost": 5,
                 "uses": 1
             }

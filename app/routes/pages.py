@@ -10,10 +10,12 @@ from database import Quest, Roles
 def index():
     player = db.getPlayer(session.get("discordId"))
     playerDict = {player.discordId:player for player in db.getAllPlayers()}
+    quests = db.getAllQuests()
+    quests = sorted(quests, key=lambda x: x.date if x.date else float('inf'))
     return render_template(
         "questboard.html",
         player=player,
-        quests=db.getAllQuests(),
+        quests=quests,
         playerDict=playerDict,
         roles=Roles
     )

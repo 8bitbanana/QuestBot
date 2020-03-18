@@ -1,4 +1,4 @@
-import discord, asyncio, twitter, subprocess
+import discord, asyncio, twitter, subprocess, json
 from configuration import Config
 from database import Database, Player
 
@@ -85,14 +85,17 @@ class Client(discord.Client):
     async def on_message(self, message):
         if message.content == "QuestBot fucked my wife":
             await message.channel.send("prove it")
-
+           
         if len(message.content) > 1 and message.content[0] == "!":
             command = message.content[1:].split(" ")
             if type(message.channel) == discord.DMChannel and message.channel.recipient.id == Config.EthanId:
                 if command[0] == "stop":
                     await client.logout()
                 if command[0] == "say":
-                    channel = self.get_channel(int(command[1]))
+                    if command[1] == "this":
+                        channel = message.channel
+                    else:
+                        channel = self.get_channel(int(command[1]))
                     sentMessage = await channel.send(" ".join(command[2:]))
                     await message.channel.send(str(sentMessage.id))
                 if command[0] == "delete":
@@ -114,6 +117,9 @@ class Client(discord.Client):
                     async with message.channel.typing():
                         for log in logs:
                             await message.channel.send(log)
+                if command[0] == "emoji":
+                    for emoji in self.guild.emojis:
+                        await message.channel.send(f"{emoji.name} - {emoji.id}")
  
             if command[0] == "quests":
                 quests = db.getAllQuests()
@@ -137,7 +143,34 @@ class Client(discord.Client):
                         inline = True
                     )
                 await message.channel.send("", embed=embed)
-            
+            if command[0] == "meals":
+                embed = discord.Embed(
+                    title = "Gourmet Meals",
+                    description = "Before a quest, characters can pay 10 Influence to have Gourmet live up to his namesake, and cook them up something special.\nYou gain the benefits for the duration of the quest."
+                )
+                with open("meals.json", "r") as f:
+                    meals = json.load(f)
+                for name, desc in meals.items():
+                    embed.add_field(
+                        name=name,
+                        value=desc,
+                        inline=True
+                    )
+                await message.channel.send("", embed=embed)
+            if command[0] == "bees":
+                await message.channel.send("There are bees here let's leave immediately")
+            if command[0] == "calendar" or command[0] == "dates":
+                embed = discord.Embed(
+                    title = "The Star Calendar",
+                )
+            if command[0] == "banner":
+                await message.channel.send("You may use your reaction to feel inspired by the banner.")
+            if command[0] == "map":
+                embed = discord.Embed()
+                embed.set_image(url="https://cdn.discordapp.com/attachments/670998594697953283/683682968648155161/Chain_Marches_Nov30_13-54.png")
+                await message.channel.send("", embed=embed)
+            if command[0] == "today":
+                await message.channel.send(f"Today is the {Config.GetCompanyDate()}")
 
     async def on_member_join(self, member):
         player = db.getPlayer(member.id)
