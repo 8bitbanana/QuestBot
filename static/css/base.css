@@ -29,6 +29,12 @@ hr:not(.card-body) {
     border-color: #e6ddbe;
 }
 
+.kia {
+    color: red;
+    font-style: italic;
+    font-weight: bolder;
+}
+
 .feather {
     width: 16px;
     height: 16px;

@@ -1,4 +1,4 @@
-import discord, asyncio, twitter, subprocess, json
+import discord, asyncio, twitter, subprocess, json, random
 from configuration import Config
 from database import Database, Player
 
@@ -24,6 +24,7 @@ class Client(discord.Client):
         self.guild = None
         self.confirmCommand = None
         self.confirmData = None
+        self.rig = None
 
         print('Logged on as {0}!'.format(self.user))
         for x in self.guilds:
@@ -120,6 +121,13 @@ class Client(discord.Client):
                 if command[0] == "emoji":
                     for emoji in self.guild.emojis:
                         await message.channel.send(f"{emoji.name} - {emoji.id}")
+                if command[0] == "rig":
+                    if command[1] == "min":
+                        self.rig = "min"
+                    elif command[1] == "max":
+                        self.rig = "max"
+                    elif command[1] == "stop":
+                        self.rig = "stop"
  
             if command[0] == "quests":
                 quests = db.getAllQuests()
@@ -159,18 +167,79 @@ class Client(discord.Client):
                 await message.channel.send("", embed=embed)
             if command[0] == "bees":
                 await message.channel.send("There are bees here let's leave immediately")
-            if command[0] == "calendar" or command[0] == "dates":
-                embed = discord.Embed(
-                    title = "The Star Calendar",
-                )
             if command[0] == "banner":
                 await message.channel.send("You may use your reaction to feel inspired by the banner.")
             if command[0] == "map":
-                embed = discord.Embed()
+                embed = discord.Embed(
+                    title = "Chain Marches Map",
+                    url = "https://cdn.discordapp.com/attachments/670998594697953283/683682968648155161/Chain_Marches_Nov30_13-54.png"
+                )
                 embed.set_image(url="https://cdn.discordapp.com/attachments/670998594697953283/683682968648155161/Chain_Marches_Nov30_13-54.png")
                 await message.channel.send("", embed=embed)
             if command[0] == "today":
                 await message.channel.send(f"Today is the {Config.GetCompanyDate()}")
+            if command[0] == "roll" or command[0] == "r":
+                try:
+                    elements = []
+                    current = "+"
+                    for char in command[1]:
+                        if char == "+":
+                            elements.append(current)
+                            current = "+"
+                        elif char == "-":
+                            elements.append(current)
+                            current = "-"
+                        else:
+                            current += char
+                    elements.append(current)
+                    rolls = []
+                    total = 0
+                    for element in elements:
+                        sign, roll = element[0], element[1:]
+                        if roll == "": continue
+                        if sign == "+": sign = 1
+                        elif sign == "-": sign = -1
+                        else: raise ValueError("Sign invalid")
+                        roll = roll.lower()
+                        if "d" in roll:
+                            number, sides = roll.split("d")
+                            if number == "": number = 1
+                            if sides == "": sides = 20
+                            number, sides = int(number), int(sides)
+                            results = []
+                            for i in range(number):
+                                result = random.randint(1, sides)
+                                if self.rig == "min":
+                                    result = 1
+                                elif self.rig == "max":
+                                    result = sides
+                                results.append(result)
+                                total += result * sign
+                            rolls.append((f"{number}d{sides}", results, sign))
+                        else:
+                            number = int(roll)
+                            total += number * sign
+                    self.rig = None
+                    rollstr = ""
+                    for roll in rolls:
+                        if roll[2] == 1:
+                            rollstr += " "
+                        elif roll[2] == -1:
+                            rollstr += "-"
+                        rollstr += f"{roll[0]}: "
+                        t = 0
+                        for x in roll[1]:
+                            rollstr += f"[{x}] "
+                            t += x
+                        rollstr += f"-> Total {t}\n"
+                    if len(rollstr) > 0:
+                        await message.channel.send(f"***{total}***\n```{rollstr}```")
+                    else:
+                        await message.channel.send(f"***{total}***")
+                except Exception as e:
+                    print("Caught exception " + str(e))
+                    await message.channel.send("I have no idea what the hell you are trying to do")
+                
 
     async def on_member_join(self, member):
         player = db.getPlayer(member.id)

@@ -38,10 +38,10 @@ class DBObject:
                 "stamps", "levelReq", "leadershipReq",
                 "stampReward", "playerSlots", "dm",
                 "date", "influenceReward", "leadershipReward",
-                "pointsToSpend", "pointReward"
+                "pointsToSpend", "pointReward", "entryDate"
             ]
             bool_keys = ["admin", "canDM"]
-            dict_int_keys = ["players", "usedpowers"]
+            dict_int_keys = ["players", "usedpowers", "recordedNames"]
             quest_keys = ["quest"]
             player_keys = []
             chronicle_keys = []
@@ -88,7 +88,7 @@ class Player(DBObject):
         # hardcoded nickname for jack
         # he shall be forever pale
         if self.discordId == Config.JackId:
-            self.nick = "Pale"
+            self.nick = "Pale 💉"
 
     def spendPoints(self, inf, lds):
         if (inf+lds) > self.pointsToSpend:
@@ -144,6 +144,17 @@ class Quest(DBObject):
 
     def __repr__(self):
         return f"<Quest {self.title}>"
+
+    def hasPlayer(self, player):
+        if type(player) == Player:
+            discordId = player.discordId
+        elif type(player) == int:
+            discordId = str(player)
+        elif type(player) == str:
+            discordId = player
+        else:
+            raise ValueError()
+        return (discordId in self.players) or (discordId == self.commander)
 
     def setDate(self, newDate):
         if newDate == None:
@@ -333,14 +344,34 @@ class PastQuest(DBObject):
         self.chronicleEntry = None
         self.viewable = False
         self.entryDate = None
+        self.deaths = []
+        self.recordedNames = {}
         if quest:
             self.quest = quest
             self.viewable = viewable
             self.entryDate = int(time.time())
+            questPlayers = list(quest.players.keys())
+            if quest.commander: questPlayers += [quest.commander]
+            db = Database() # forgive me
+            for discordId in questPlayers:
+                player = db.getPlayer(discordId)
+                self.recordedNames[player.discordId] = player.nick
+            del db
         elif jsonData:
             self.deserialise(jsonData)
         else:
             raise ValueError("Either supply quest or jsonData")
+
+    def __repr__(self):
+        return f"<PastQuest {self.quest.title}>"
+
+    def addDeath(self, player):
+        if not self.quest.hasPlayer(player):
+            return False, "Player is not in quest"
+        if player.discordId in self.deaths:
+            return False, "Player is already marked as dead"
+        self.deaths.append(player.discordId)
+        return True, "Success"
 
     def getFormattedDate(self):
         if self.entryDate == None: return "No date recorded"
@@ -461,6 +492,10 @@ class Database:
     def addPastQuest(self, quest, viewable=True):
         entry = PastQuest(quest, viewable)
         self.db.lpush("PastQuests", entry.serialise())
+
+    @waitForLock
+    def updatePastQuest(self, index, newPastQuest):
+        self.db.lset("PastQuests", index, newPastQuest.serialise())
 
     @waitForLock
     def getPastQuests(self):

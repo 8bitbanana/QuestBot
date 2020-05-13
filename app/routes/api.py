@@ -178,18 +178,20 @@ def setDateSubmit():
     if quest == None:
         return "Unknown Quest", 404
     if request.form.to_dict().get("date") == None:
-        utc_date = None
+        # utc_date = None
+        date = None
     else:
         date = request.form['date']
         try:
             date = int(date)
         except ValueError:
             return "Invalid timestamp", 400
-        tz = pytz.timezone(config.TimeZone)
-        date = datetime.fromtimestamp(date)
-        local_date = tz.localize(date, is_dst=None)
-        utc_date = local_date.astimezone(pytz.utc).timestamp()
-    quest.setDate(utc_date)
+    #     tz = pytz.timezone(config.TimeZone)
+    #     date = datetime.fromtimestamp(date)
+    #     local_date = tz.localize(date, is_dst=None)
+    #     utc_date = local_date.astimezone(pytz.utc).timestamp()
+    # quest.setDate(utc_date)
+    quest.setDate(date)
     db.setQuest(quest)
     return redirect("/dmcorner", code=302)
 

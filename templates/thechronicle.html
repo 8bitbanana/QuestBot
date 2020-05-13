@@ -22,7 +22,7 @@
                     <div style="box-shadow:none" class="card-body">
                         <h4>{{ quest.title }}</h4>
                         <hr>
-                        <p>{{ quest.description }}</p>
+                        <p>{{ quest.description|htmlnewlines|safe }}</p>
                         <hr>
                         <p>Location: {{ quest.location }}<br>Contractor: {{ quest.giver }}</p>
                         <hr>
@@ -57,10 +57,10 @@
                             <p><strong>Participants</strong></p>
                             <ul>
                             {% if quest.commander %}
-                            <li>{{ playerDict[quest.commander].nick }} (Commander) {% if quest.commanderRole != None %}({{ roles[quest.commanderRole]['name']}}){% endif %}</li>
+                            <li>{{ pastquest.recordedNames[quest.commander] }} (Commander) {% if quest.commanderRole != None %}({{ roles[quest.commanderRole]['name']}}){% endif %}</li>
                             {% endif %}
                             {% for discordId, roleId in quest.players.items() %}
-                            <li>{{ playerDict[discordId].nick }} {% if roleId %}({{ roles[roleId]['name'] }}){% endif %}</li>
+                            <li>{{ pastquest.recordedNames[discordId] }}{% if roleId %} ({{ roles[roleId]['name'] }}){% endif %}{%if discordId in pastquest.deaths %} <span class="kia">(KILLED IN ACTION)</span>{% endif %}</li>
                             {% endfor %}
                             </ul>
                         </div>

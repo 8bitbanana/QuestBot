@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, escape
 from database import Database
 from configuration import Config
 
@@ -14,12 +14,25 @@ app = Flask(__name__)
 app.template_folder = "../templates"
 app.static_folder = "../static"
 app.secret_key = Config.ApiKeys['flask']['SecretKey']
+app.config.update(
+    SESSION_COOKIE_SECURE=True,
+    SESSION_COOKIE_SAMESITE="Strict"
+)
 
 @app.template_filter()
 def jsescape(s):
     if type(s) == str:
         s = s.replace("\'", "\\\'")
         s = s.replace("\"", "\\\"")
+    return s
+
+@app.template_filter()
+def htmlnewlines(s):
+    if type(s) == str:
+        s = str(escape(s))
+        s = s.replace("\r\n"*3, "<br>")
+        s = s.replace("\r\n"*2, "<br>")
+        s = s.replace("\n", "<br>")
     return s
 
 @app.template_global()

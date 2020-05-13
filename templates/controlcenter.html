@@ -10,7 +10,7 @@
 <div id="questswitcher">
     <div id="questtitle">
         <h3 class="upabit vcenter">{{ currentQuest.title }}</h3>
-        <p class="tinyquestinfo">DMed by {{ playerDict[currentQuest.dm].nick }} - {% if currentQuest.date %}{{ currentQuest.getFormattedDate() }}{% else %}No date set{% endif %}</p>
+        <p class="tinyquestinfo">DMed by {{ playerDict[currentQuest.dm].nick }} - {% if currentQuest.date %}{{ currentQuest.getFormattedDate() }} {% else %}No date set{% endif %} {% if player.discordId == currentQuest.commander %}<a href="setdate?questId={{ currentQuest.questId }}">(Set Date)</a>{% endif %}</p>
     </div>
     <div id="questselectcontainer">
         {{ questSelect(quests, currentQuest, "questSelect vcenter", onChange="viewquest(this.value)") }}
