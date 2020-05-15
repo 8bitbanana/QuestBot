@@ -14,6 +14,15 @@ h1 {
     color: white;
 }
 
+@media screen and (max-width: 1840px) {
+    .column-on-small {
+        flex-direction: column;   
+    }
+    .column-on-small > div {
+        padding-bottom: 0.5rem;
+    }
+}
+
 .dmheader {
     font-family: MrJeeves;
     text-align: center;
