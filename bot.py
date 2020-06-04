@@ -176,8 +176,38 @@ class Client(discord.Client):
                 )
                 embed.set_image(url="https://cdn.discordapp.com/attachments/670998594697953283/683682968648155161/Chain_Marches_Nov30_13-54.png")
                 await message.channel.send("", embed=embed)
+            if command[0] == "fuck":
+                embed = discord.Embed()
+                embed.set_image(url="https://i.imgur.com/HyWrluy.png")
+                await message.channel.send("", embed=embed)
             if command[0] == "today":
                 await message.channel.send(f"Today is the {Config.GetCompanyDate()}")
+            if command[0] == "nextlevel":
+                quests = db.getAllQuests()
+                quests = sorted(quests, key=lambda x: x.date if x.date else float('inf'))
+                if len(quests) > 0:
+                    quest = quests[0]
+                    questPlayers = []
+                    if quest.commander: questPlayers.append(quest.commander)
+                    questPlayers += list(quest.players.keys())
+                    willLevelUp = []
+                    for discordId in questPlayers:
+                        player = db.getPlayer(discordId)
+                        stampsNeeded = player.StampTotalToNextLevel() - player.stamps
+                        if stampsNeeded <= quest.stampReward:
+                            willLevelUp.append(player)
+                    if len(willLevelUp) == 0:
+                        await message.channel.send(f"Nobody will level up after {quest.title}")
+                    elif len(willLevelUp) == 1:
+                        await message.channel.send(f"{willLevelUp[0].nick} will level up after {quest.title}")
+                    elif len(willLevelUp) == 2:
+                        await message.channel.send(f"{willLevelUp[0].nick} and {willLevelUp[1].nick} will level up after {quest.title}")
+                    else:
+                        commaStr = ", ".join([x.nick for x in willLevelUp[:-2]])
+                        await message.channel.send(f"{commaStr}, {willLevelUp[-2].nick} and {willLevelUp[-1].nick} will level up after {quest.title}")
+                        
+                else:
+                    await channel.send("There are no upcoming quests.")
             if command[0] == "roll" or command[0] == "r":
                 try:
                     elements = []
