@@ -1,10 +1,17 @@
-from flask import request, session, redirect, abort
+from flask import request, session, redirect, abort, send_file, Response
 from datetime import datetime
-import pytz, json
+import pytz, json, tempfile
 
 from app.routes.util import *
 from app import app, config, db
 from database import Quest, Roles
+
+@app.route("/calendar.ics")
+def makeICS():
+    player = db.getPlayer(request.args["discordId"])
+    cal = db.makeICS(player)
+    return Response(str(cal), mimetype="text/calendar", headers={"Content-disposition":
+                 "attachment; filename=chainmarches.ics"})
 
 @app.route("/questBoardAction/<action>", methods=['POST'])
 @needPlayerAuth
@@ -64,6 +71,8 @@ def controlCenterAction(action):
         if result:
             active = Roles[quest.getPlayerRole(player)]['actives'][activeId]
             player.leadership -= active['cost']
+            # if activeId == "striketrue" and player.discordId == 153199290641022977:
+            #     db.pushTask("WHISPER")
     else:
         return "Unknown action", 400
     if result:

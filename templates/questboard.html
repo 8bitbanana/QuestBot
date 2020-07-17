@@ -35,7 +35,7 @@
                 {% else %}
                     <p><em>No DM set</em></p>
                 {% endif %}
-                <p><em>{{ quest.getFormattedDate() }} {% if player.discordId == quest.commander %}<a href="setdate?questId={{ quest.questId }}">(Set Date)</a>{% endif %}</em></p>
+                <p><em>{{ quest.getFormattedDate() }} {% if player.discordId == quest.commander or player.discordId == quest.dm %}<a href="setdate?questId={{ quest.questId }}">(Set Date)</a>{% endif %}</em></p>
             </div>
             <hr>
             <div class="text-center">

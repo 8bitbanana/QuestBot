@@ -8,16 +8,16 @@ body {
 }
 
 .copper {
-    border: solid 0.4rem #6A3805;
+    border: solid 0.4rem #d88656;
 }
 .silver {
-    border: solid 0.4rem #B4B4B4;
+    border: solid 0.4rem #92acb4;
 }
 .gold {
-    border: solid 0.4rem #AF9500;
+    border: solid 0.4rem #d8c44f;
 }
 .platinum {
-    border: solid 0.4rem #9bb2cb;
+    border: solid 0.4rem #92c1cd;
 }
 
 #toolbar-wrapper {
@@ -70,10 +70,54 @@ body {
 .card-body {
     font-family: BookSanity;
     padding: 16px;
-    background-color: #e6ddbe;
-    background-image: url("/static/img/homebrewery_bg.jpg");
+    /* background-color: #e6ddbe; */
+    background-image:
+        url("/static/img/homebrewery_bg.jpg");
     font-size: smaller;
+    background-origin: content-box;
 }
+
+
+.copper > .card-body, .bronze > .card-body {
+    background-image:
+        url("/static/img/bronzealpha.png"),
+        url("/static/img/homebrewery_bg.jpg");
+    background-size: 180%, auto;
+    background-repeat: no-repeat, repeat;
+    background-position: center, left;
+}
+
+.silver > .card-body {
+    background-image:
+        url("/static/img/silveralpha.png"),
+        url("/static/img/homebrewery_bg.jpg");
+    background-size: 180%, auto;
+    background-repeat: no-repeat, repeat;
+    background-position: center, left;
+}
+
+.gold > .card-body {
+    background-image:
+        url("/static/img/goldalpha.png"),
+        url("/static/img/homebrewery_bg.jpg");
+    background-size: 180%, auto;
+    background-repeat: no-repeat, repeat;
+    background-position: center, left;
+}
+
+.platinum > .card-body {
+    background-image:
+        url("/static/img/platinumalpha.png"),
+        url("/static/img/homebrewery_bg.jpg");
+    background-size: 180%, auto;
+    background-repeat: no-repeat, repeat;
+    background-position: center, left;
+}
+
+.chronicleentry {
+    background-size: 130%, auto !important;
+}
+
 .card-body h4, .cardlike h4, .questtitle {
     font-family: MrJeeves;
     color: #58180D;

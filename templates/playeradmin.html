@@ -13,7 +13,7 @@
     {% for player in players %}
     <div class="card mb-4 spellcard" style="display: inherit">
         <div class="card-body">
-            <h4>{{ player.nick }}</h4>
+            <h4 title="{{ player.discordId }}">{{ player.nick }}</h4>
             <form action="/updatePlayerStats" method="POST">
             <label class="text-truncate">Influence</label>
             <input name="influence" class="form-control" type="number" min="0" value="{{ player.influence }}">

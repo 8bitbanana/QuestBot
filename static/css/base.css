@@ -14,6 +14,16 @@ h1 {
     color: white;
 }
 
+.selfstats-button-row {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-top: 1rem;
+}
+.selfstats-button-row > .btn {
+    margin: 5px;
+}
+
 @media screen and (max-width: 1840px) {
     .column-on-small {
         flex-direction: column;   

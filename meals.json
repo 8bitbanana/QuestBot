@@ -1,8 +1,8 @@
 {
-    "Arcane Meal":"You gain a bonus to damage with spells equal to your level. This bonus is halved on spells that target more than one creature.",
-    "Chilled Meal":"You suffer no penalty from hot climates.",
-    "Hearty Meal":"Whenever you would be healed, roll the dice twice, taking the higher of the two results.",
-    "Mighty Meal":"You add +1 to attack rolls with weapon attacks.",
-    "Spicy Meal":"You suffer no penalty from cold climates.",
+    "Arcane Meal":"When you roll damage for a spell of 1st level or higher, you gain a bonus to that roll equal to your proficiency bonus. If the spell cast can deal damage to more than one creature, you choose only one target of the spell to take this bonus damage.",
+    "Brilliant Meal":"You gain a bonus to saving throws equal to half your proficiency bonus.",
+    "Hearty Meal":"Whenever you receive healing, roll the dice twice, taking the higher of the two results, then add your Constitution modifier.",
+    "Mighty Meal":"You gain a bonus to damage rolls made with weapon attacks equal to half your proficiency bonus.",
+    "Protective Meal":"Choose one of the following damage types: acid, cold, fire, lightning, poison, or thunder. You gain resistance to the chosen type.",
     "Tough Meal":"Your current hit points and your hit point maximum increased by an amount equal to your level."
 }

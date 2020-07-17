@@ -3,7 +3,8 @@ import redis_lock
 import functools
 import time
 import pytz
-from datetime import datetime
+import ics
+from datetime import datetime, timedelta
 from configuration import Config
 
 def UUID():
@@ -421,7 +422,29 @@ class Database:
 
     # @waitForLock()
     # def popTriggers(self):
-        
+
+    @waitForLock
+    def makeICS(self, playerfilter=None):
+        if isinstance(playerfilter, Player):
+            playerfilter = playerfilter.discordId
+        c = ics.Calendar()
+        for quest in self.getAllQuests():
+            if not quest.date: continue
+            if playerfilter:
+                if not any((
+                    playerfilter == quest.dm,
+                    playerfilter == quest.commander,
+                    playerfilter in list(quest.players.keys())
+                )): continue
+            desc = quest.description.replace('\r', '')
+            e = ics.Event(
+                name = f"Chain Marches - {quest.title}",
+                description= f"Dmed by {self.getPlayer(quest.dm).nick}\n{desc}",
+                begin=quest.date,
+                alarms=[ics.alarm.DisplayAlarm(timedelta(hours=-1))]
+            )
+            c.events.add(e)
+        return c
 
     @waitForLock
     def popAllTasks(self):

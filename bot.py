@@ -71,6 +71,8 @@ class Client(discord.Client):
                 )
                 await self.voyagesChannel.send(f"@everyone A new Quest is now available!", embed=embed)
                 #twitter.PostUpdate(f"A new quest is available!\n{quest.title[:200]}")
+            # if command[0] == "WHISPER":
+            #     self.generalChannel.send("bonk")
 
 
     def updateMemberDB(self):

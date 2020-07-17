@@ -9,6 +9,12 @@
             }
         ],
         "actives": {
+            "riskassess": {
+                "name": "Risk Assessment",
+                "desc": "At the start of your turn, you may choose a number of creatures within 30 feet of you up to your proficiency bonus. For each of those creatures, you may ask the DM three of the following questions about that creature, learning the answer:<br><ul><li>The creature’s AC.</li><li>The creature’s physical ability scores: Strength, Dexterity, and Constitution.</li><li>The creature’s mental ability scores: Intelligence, Wisdom, and Charisma.</li><li>The creature’s damage vulnerabilities.</li><li>The creature’s damage resistances.</li><li>The creature’s damage immunities.</li><li>The creature’s condition immunities.</li><li>Whether the creature has any special senses, what those special senses are, and the distance they reach to.</li><li>If the creature can cast any spells, and the highest level spell available to it.</li></ul>",
+                "cost":5,
+                "uses": 1
+            },
             "shutdown": {
                 "name": "Shutdown",
                 "desc": "As an action on your turn, you replicate the effects of the <em>dispel magic</em> spell as if it were cast at a level equal to 3 + your proficiency bonus.",
@@ -43,6 +49,28 @@
         ],
         "cost": 0
     },
+    "defender": {
+        "name": "Defender",
+        "desc": "Defenders act as front-line protectors of their allies, taking the hits so they don’t have to. The defend is first on the field, and last to go down.",
+        "passives": [
+            {
+                "name": "Endurance",
+                "desc": "Whenever a creature rolls damage against you, you reduce that incoming damage by an amount equal to half your proficiency bonus."
+            }
+        ],
+        "actives": {
+            "bulwark": {
+                "name": "Bulwark",
+                "desc": "Whenever a creature within 15 feet of you would suffer damage that is not poison or psychic type from a source that you can see, you may use your reaction, moving up to half your speed to an unoccupied space within 5 feet of the target. The target creature takes no damage and you take half the damage it would have taken otherwise. The target creature can then suffer no additional effects from the damage source.",
+                "cost": 10,
+                "uses": 1
+            }
+        },
+        "requirements": [
+            "Proficiency in heavy armour, AC 18 or higher, or a d12 hit dice"
+        ],
+        "cost": 0
+    },
     "manatarms": {
         "name": "Man-at-Arms",
         "desc": "The man-at-arms marks themselves for their expertise in weaponry, either through maintenance or ability of usage.",
@@ -61,7 +89,7 @@
             }
         },
         "requirements": [
-            "Proficiency in marital weapons or smith’s tools"
+            "Proficiency in marital weapons or smith’s tools, or a gunsmith’s kit"
         ],
         "cost": 0
     },
@@ -77,7 +105,7 @@
         "actives": {
             "treatmentundertrial": {
                 "name": "Treatment Under Trial",
-                "desc": "As a bonus action on your turn, you perform emergency treatment on an unconscious creature you can touch. The target can expend a number of hit dice equal to its proficiency bonus + 1, regaining hit points as if it spent them during a short rest.<br>Creatures that recover hit points in this way gain the benefits of your Rest and Mend Role Effect.",
+                "desc": "As a bonus action on your turn, you perform emergency treatment on a creature you can touch. The target can expend a number of hit dice equal to its proficiency bonus, regaining hit points as if it spent them during a short rest.<br>Creatures that recover hit points in this way gain the benefits of your Rest and Mend Role Effect.",
                 "cost": 10,
                 "uses": 1
             }
@@ -93,7 +121,7 @@
         "passives": [
             {
                 "name": "Nimble Step",
-                "desc": "You gain an additional 5 feet of movement and can take the Dash action as a bonus action.<br>If you can already take the Dash action as a bonus action, you gain an additional 10 feet of movement instead of 5 feet."
+                "desc": "You can take the Dash action as a bonus action.<br>If you can already take the Dash action as a bonus action, you gain an additional 5 feet of movement."
             }
         ],
         "actives": {
@@ -121,7 +149,7 @@
         "actives": {
             "planttheflag": {
                 "name": "Plant the Flag",
-                "desc": "As a bonus action on your turn, you plant the Starblade Standard into the ground at your feet, releasing a wave of energy in a 30-foot radius around it that lasts for 10 minutes.<br>Whilst an allied creature stands in the area, they gain the following benefits:<br><ul><li>Each creature gains advantage on saving throws against the charmed or frightened condition.</li><li>Each creature gains temporary hit points equal to 2 + its proficiency bonus at the start of each of its turns.</li></ul>Once the effect ends, the Standard becomes an inert banner.",
+                "desc": "As a bonus action on your turn, you plant the Starblade Standard into the ground at your feet, releasing a wave of energy in a 30-foot radius around it that lasts for 1 minute.<br>Whilst an allied creature stands in the area, they gain the following benefits:<br><ul><li>Each creature gains advantage on saving throws against the charmed or frightened condition.</li><li>Each creature gains temporary hit points equal to 2 + its proficiency bonus at the start of each of its turns.</li><li>Each creature adds 1d4 to the first attack roll it makes on each of its turns.</li></ul>Whilst using your Plant the Flag role power, creatures must be within 30 feet of the Starblade Banner to gain the benefits of Morale Boost.<br>Once the effect ends, the standard can still provide Morale Boost in its area, but otherwise has no effects and is a nonmagical banner.",
                 "cost": 10,
                 "uses": 1
             }
