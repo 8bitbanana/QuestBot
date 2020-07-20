@@ -1,5 +1,5 @@
 from flask import render_template, redirect, send_file
-import subprocess, requests
+import subprocess, requests, time
 
 from app.routes.util import *
 from app import app, config, db
@@ -201,18 +201,22 @@ def discordlogin():
         'redirect_uri': config.RedirectURI,
         'scope': 'identify'
     }
-    r = requests.post("https://discordapp.com/api/oauth2/token", data=data)
+    r = requests.post("https://discord.com/api/oauth2/token", data=data)
     r.raise_for_status()
     access_token = r.json()['access_token']
 
-    r = requests.get("https://discordapp.com/api/users/@me", headers={"Authorization":"Bearer "+access_token})
+    r = requests.get("https://discord.com/api/users/@me", headers={"Authorization":"Bearer "+access_token})
     r.raise_for_status()
     user_id = r.json()['id']
 
     session['discordId'] = user_id
     session.permanent = True
     logAction()
-    return redirect("/", code=302)
+    return redirect("/waitingarea", code=302)
+
+@app.route("/waitingarea")
+def waitThenRoot():
+    return render_template("waitingarea.html")
 
 @app.route("/logout")
 def logout():
