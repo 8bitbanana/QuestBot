@@ -194,6 +194,7 @@ class Client(discord.Client):
                     questPlayers += list(quest.players.keys())
                     willLevelUp = []
                     for discordId in questPlayers:
+                        if discordId in quest.voidRewards: continue
                         player = db.getPlayer(discordId)
                         stampsNeeded = player.StampTotalToNextLevel() - player.stamps
                         if stampsNeeded <= quest.stampReward:

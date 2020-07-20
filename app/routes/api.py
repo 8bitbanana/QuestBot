@@ -111,6 +111,12 @@ def questAdminAction(action):
         result, message = quest.setRole(player, roleId, forceAdd=True)
     elif action == "refreshPlayerRole":
         result, message = quest.refreshPlayerRole(player)
+    elif action == "setVoidRewards":
+        boolparam = request.args["boolparam"]
+        if boolparam == "false": boolparam = False
+        elif boolparam == "true": boolparam = True
+        else: return "Missing boolparam", 400
+        result, message = quest.setVoidRewards(player, boolparam)
     else:
         return "Unknown action", 400
     if result:

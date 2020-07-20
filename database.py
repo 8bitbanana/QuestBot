@@ -139,6 +139,7 @@ class Quest(DBObject):
         self.dm = None
         self.date = None # stored as unix time int
         self.usedpowers = {}
+        self.voidRewards = []
         self.announce = True
         if jsonData:
             self.deserialise(jsonData)
@@ -156,6 +157,18 @@ class Quest(DBObject):
         else:
             raise ValueError()
         return (discordId in self.players) or (discordId == self.commander)
+
+    def setVoidRewards(self, player, void):
+        if not self.hasPlayer(player):
+            return False, "Player not in quest"
+        currentvoid = player.discordId in self.voidRewards
+        if void and (not currentvoid):
+            self.voidRewards.append(player.discordId)
+            return True, "Player voided"
+        elif (not void) and currentvoid:
+            self.voidRewards.remove(player.discordId)
+            return True, "Player unvoided"
+        return True, "Unchanged"
 
     def setDate(self, newDate):
         if newDate == None:
@@ -481,6 +494,8 @@ class Database:
             playersToCredit = list(quest.players.keys())
             if quest.commander: playersToCredit.append(quest.commander)
             for playerId in playersToCredit:
+                if playerId in quest.voidRewards:
+                    continue
                 player = self.getPlayer(playerId)
                 startLevel = player.getLevel()
                 player.stamps += quest.stampReward

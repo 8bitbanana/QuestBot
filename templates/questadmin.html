@@ -27,6 +27,8 @@
                 {% if quest.commander %}
                 {% set jsfunction="qaa('changeRole', '"+quest.questId|string + "', '"+ quest.commander|string+"', this.value)" %}
                 {{ roleSelect(roles, quest.commanderRole, "roleSelect", unselectedText="No Role", onChange=jsfunction) }}
+                {% set jsfunction="qaa('setVoidRewards', '"+quest.questId|string+"', '"+quest.commander|string+"', null, this.checked)" %}
+                {{ voidSelect(quest.commander, quest.questId, "voidcommander", quest.commander in quest.voidRewards, onChange=jsfunction) }}
                 {% endif %}
                 <hr>
                 <p style="margin-bottom: 0">DM</p>
@@ -41,6 +43,8 @@
                     <li>{{ playerDict[discordId].nick }} <a href="#" onclick="{{ jsfunction1 }}">(Remove)</a> {% if player.discordId in quest.usedpowers.keys() %}<a onclick="{{ jsfunction2 }}" href="#">(Refresh power)</a>{% endif %}
                     {% set jsfunction="qaa('changeRole', '"+quest.questId|string + "', '"+discordId|string+"', this.value)" %}
                     {{ roleSelect(roles, quest.players[discordId], "roleSelect", unselectedText="No Role", onChange=jsfunction) }}</li>
+                    {% set jsfunction="qaa('setVoidRewards', '"+quest.questId|string+"', '"+discordId|string+"', null, this.checked)" %}
+                    {{ voidSelect(discordId, quest.questId, "voidplayer", discordId in quest.voidRewards, onChange=jsfunction) }}
                 {% endfor %}
                 </ul>
                 <hr>
@@ -51,7 +55,7 @@
         </div>
     {% endfor %}
     <script>
-        function qaa(action, questId, discordId=null, roleId=null) {
+        function qaa(action, questId, discordId=null, roleId=null, boolparam=null) {
             if (discordId == "unselected") {
                 if (action=="addPlayer") {
                     return;
@@ -65,6 +69,9 @@
             }
             if (roleId != null) {
                 url += "&roleId="+roleId;
+            }
+            if (boolparam != null) {
+                url += "&boolparam="+boolparam;
             }
             $.post(
                 url

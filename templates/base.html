@@ -23,6 +23,12 @@
         {% endfor %}
     </select>
 {%- endmacro %}
+{% macro voidSelect(discordId, questId, cssclass, current, onChange=None) %}
+    <div class="custom-control custom-checkbox voidselect">
+        <input {% if onChange %}onChange="{{ onChange }}"{% endif %} type="checkbox" id="checkvoid{{discordId}}{{questId}}" class="custom-control-input {{ cssclass }}" {% if current %}checked{% endif %}>
+        <label for="checkvoid{{discordId}}{{questId}}" class="custom-control-label">Void Rewards</label>
+    </div>
+{%- endmacro %}
 
 {%- macro titlemacro() -%}
 {% block title %}{% endblock %}
