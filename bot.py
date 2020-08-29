@@ -1,4 +1,5 @@
-import discord, asyncio, twitter, subprocess, json, random
+import discord, twitter, subprocess, json, random
+import asyncio, signal
 from configuration import Config
 from database import Database, Player
 
@@ -41,6 +42,12 @@ class Client(discord.Client):
         self.updateMemberDB()
 
         self.main_loop_instance = client.loop.create_task(self.schedule_task(2, self.main_loop))
+        for s in (signal.SIGHUP, signal.SIGTERM, signal.SIGINT):
+            client.loop.add_signal_handler(s, lambda: asyncio.ensure_future(self.shutdown()))
+
+    async def shutdown(self):
+        print("Graceful shutdown")
+        await client.logout()
 
     async def schedule_task(self, timeout, func):
         while True:
@@ -113,13 +120,8 @@ class Client(discord.Client):
                             await self.confirmData.delete()
                         self.confirmCommand = None
                         self.confirmData = None
-                if command[0] == "logs":
-                    inttest = int(command[1])
-                    logs = subprocess.check_output(['/usr/bin/tail', '-'+command[1], './logs/uwsgi.log'])
-                    logs = logs.decode("utf-8").splitlines()[::-1]
-                    async with message.channel.typing():
-                        for log in logs:
-                            await message.channel.send(log)
+                if command[0] == "perms":
+                    await message.channel.send(str(self.guild.me.guild_permissions))
                 if command[0] == "emoji":
                     for emoji in self.guild.emojis:
                         await message.channel.send(f"{emoji.name} - {emoji.id}")

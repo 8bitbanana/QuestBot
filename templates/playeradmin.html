@@ -21,6 +21,7 @@
             <input name="leadership" class="form-control" type="number" min="0" value="{{ player.leadership }}">
             <label class="text-truncate">Stamps</label>
             <input name="stamps" class="form-control" type="number" min="0" value="{{ player.stamps }}">
+            <p>Level: {{ player.getLevel() }} ({{ player.stamps }}/{{ player.StampTotalToNextLevel() }})</p>
             <input name="discordId" type="hidden" value="{{ player.discordId }}">
             <input style="margin-top:0.5rem" type="submit" class="btn btn-primary mx-auto" value="Update">
             </form>

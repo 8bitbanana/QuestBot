@@ -51,7 +51,7 @@
     },
     "defender": {
         "name": "Defender",
-        "desc": "Defenders act as front-line protectors of their allies, taking the hits so they don’t have to. The defend is first on the field, and last to go down.",
+        "desc": "Defenders act as front-line protectors of their allies, taking the hits so they don’t have to. The defender is first on the field, and last to go down.",
         "passives": [
             {
                 "name": "Endurance",
